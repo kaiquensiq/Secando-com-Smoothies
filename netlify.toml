@@ -1,8 +1,8 @@
 [build]
   # Diretório base do projeto
   base = "project"
-  # Comando para build do projeto
-  command = "npm run build"
+  # Comando para build do projeto - CI='' previne warnings serem tratados como erros
+  command = "CI='' npm run build"
   # Diretório onde os arquivos buildados ficam
   publish = "project/dist"
 
