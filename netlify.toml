@@ -4,7 +4,7 @@
   # Comando para build do projeto - CI='' previne warnings serem tratados como erros
   command = "CI='' npm run build"
   # Diretório onde os arquivos buildados ficam
-  publish = "project/dist"
+  publish = "dist"
 
 # Configurações para SPA (Single Page Application)
 [[redirects]]
