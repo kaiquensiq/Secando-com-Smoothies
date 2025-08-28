@@ -132,6 +132,25 @@ export interface Database {
           points_earned?: number;
         };
       };
+      daily_challenges: {
+        Row: {
+          id: string;
+          user_id: string;
+          day: number;
+          challenge_id: string;
+          completed_at: string;
+          points_earned: number;
+        };
+        Insert: {
+          user_id: string;
+          day: number;
+          challenge_id: string;
+          points_earned?: number;
+        };
+        Update: {
+          points_earned?: number;
+        };
+      };
       hydration_tracking: {
         Row: {
           id: string;
@@ -433,6 +452,42 @@ export const userService = {
       .select()
       .single();
     return { data, error };
+  },
+
+  // Funções para desafios diários
+  saveDailyChallenge: async (userId: string, day: number, challengeId: string, pointsEarned: number = 0) => {
+    const { error } = await supabase
+      .from('daily_challenges')
+      .upsert({ 
+        user_id: userId, 
+        day: day, 
+        challenge_id: challengeId,
+        points_earned: pointsEarned
+      });
+    
+    if (error) throw error;
+  },
+
+  getDailyChallenges: async (userId: string, day: number) => {
+    const { data, error } = await supabase
+      .from('daily_challenges')
+      .select('challenge_id')
+      .eq('user_id', userId)
+      .eq('day', day);
+    
+    if (error) throw error;
+    return data?.map(item => item.challenge_id) || [];
+  },
+
+  removeDailyChallenge: async (userId: string, day: number, challengeId: string) => {
+    const { error } = await supabase
+      .from('daily_challenges')
+      .delete()
+      .eq('user_id', userId)
+      .eq('day', day)
+      .eq('challenge_id', challengeId);
+    
+    if (error) throw error;
   },
 };
 

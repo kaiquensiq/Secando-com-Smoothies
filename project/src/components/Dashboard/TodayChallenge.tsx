@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircle2, Droplets, Camera, Clock, Apple } from 'lucide-react';
+import { userService } from '../../lib/supabase';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface TodayChallengeProps {
   currentDay: number;
@@ -7,6 +9,26 @@ interface TodayChallengeProps {
 
 const TodayChallenge: React.FC<TodayChallengeProps> = ({ currentDay }) => {
   const [completedChallenges, setCompletedChallenges] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+
+  // Carregar desafios salvos do banco de dados
+  useEffect(() => {
+    const loadCompletedChallenges = async () => {
+      if (!user?.id) return;
+      
+      try {
+        const savedChallenges = await userService.getDailyChallenges(user.id, currentDay);
+        setCompletedChallenges(savedChallenges);
+      } catch (error) {
+        console.error('Erro ao carregar desafios:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCompletedChallenges();
+  }, [user?.id, currentDay]);
 
   const getDailyChallenges = (day: number) => {
     const baseChallenges = [
@@ -62,16 +84,44 @@ const TodayChallenge: React.FC<TodayChallengeProps> = ({ currentDay }) => {
 
   const challenges = getDailyChallenges(currentDay);
 
-  const toggleChallenge = (challengeId: string) => {
-    setCompletedChallenges(prev => 
-      prev.includes(challengeId) 
-        ? prev.filter(id => id !== challengeId)
-        : [...prev, challengeId]
-    );
+  const toggleChallenge = async (challengeId: string) => {
+    if (!user?.id) return;
+
+    const isCompleted = completedChallenges.includes(challengeId);
+    const challenge = challenges.find(c => c.id === challengeId);
+    
+    try {
+      if (isCompleted) {
+        // Remover desafio
+        await userService.removeDailyChallenge(user.id, currentDay, challengeId);
+        setCompletedChallenges(prev => prev.filter(id => id !== challengeId));
+      } else {
+        // Adicionar desafio
+        await userService.saveDailyChallenge(user.id, currentDay, challengeId, challenge?.points || 0);
+        setCompletedChallenges(prev => [...prev, challengeId]);
+      }
+    } catch (error) {
+      console.error('Erro ao salvar desafio:', error);
+    }
   };
 
   const completedCount = completedChallenges.length;
   const totalChallenges = challenges.length;
+
+  if (loading) {
+    return (
+      <div className="bg-gray-50 rounded-2xl p-6 space-y-4 border border-gray-200">
+        <div className="animate-pulse">
+          <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-20 bg-gray-200 rounded-xl"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 rounded-2xl p-6 space-y-4 border border-gray-200">
