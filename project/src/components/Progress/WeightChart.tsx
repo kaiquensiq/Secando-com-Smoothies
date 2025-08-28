@@ -42,8 +42,8 @@ const WeightChart: React.FC<WeightChartProps> = ({ userData }) => {
   return (
     <div className="space-y-6">
       {/* Chart Container */}
-      <div className="bg-gray-800 rounded-2xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-white text-center">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <h3 className="text-lg font-bold text-gray-900 text-center">
           Evolução do Peso
         </h3>
 
@@ -155,7 +155,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ userData }) => {
           </svg>
         </div>
 
-        <div className="text-center text-sm text-gray-400">
+        <div className="text-center text-sm text-gray-800">
           Dias do programa
         </div>
       </div>
@@ -166,7 +166,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ userData }) => {
           <div className="text-2xl font-bold text-green-400">
             {(userData.initialWeight - userData.currentWeight).toFixed(1)}kg
           </div>
-          <div className="text-gray-300 text-sm">
+          <div className="text-gray-800 text-sm">
             Peso Perdido
           </div>
         </div>
@@ -175,28 +175,28 @@ const WeightChart: React.FC<WeightChartProps> = ({ userData }) => {
           <div className="text-2xl font-bold text-pink-400">
             {Math.max(userData.currentWeight - userData.targetWeight, 0).toFixed(1)}kg
           </div>
-          <div className="text-gray-300 text-sm">
+          <div className="text-gray-800 text-sm">
             Para a Meta
           </div>
         </div>
       </div>
 
       {/* Predictions */}
-      <div className="bg-gray-800 rounded-2xl p-6 space-y-4">
-        <h4 className="text-lg font-bold text-white text-center">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <h4 className="text-lg font-bold text-gray-900 text-center">
           Projeções
         </h4>
         
         <div className="space-y-3 text-sm">
           <div className="flex justify-between items-center">
-            <span className="text-gray-300">Média de perda/dia:</span>
+            <span className="text-gray-800">Média de perda/dia:</span>
             <span className="text-green-400 font-bold">
               {((userData.initialWeight - userData.currentWeight) / userData.currentDay).toFixed(2)}kg
             </span>
           </div>
           
           <div className="flex justify-between items-center">
-            <span className="text-gray-300">Previsão no dia 21:</span>
+            <span className="text-gray-800">Previsão no dia 21:</span>
             <span className="text-blue-400 font-bold">
               {(userData.currentWeight - ((userData.initialWeight - userData.currentWeight) / userData.currentDay) * (21 - userData.currentDay)).toFixed(1)}kg
             </span>
@@ -204,7 +204,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ userData }) => {
           
           {userData.currentWeight > userData.targetWeight && (
             <div className="flex justify-between items-center">
-              <span className="text-gray-300">Meta estimada em:</span>
+              <span className="text-gray-800">Meta estimada em:</span>
               <span className="text-pink-400 font-bold">
                 {Math.ceil((userData.currentWeight - userData.targetWeight) / ((userData.initialWeight - userData.currentWeight) / userData.currentDay))} dias
               </span>

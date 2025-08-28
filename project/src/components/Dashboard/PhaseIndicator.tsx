@@ -50,11 +50,11 @@ const PhaseIndicator: React.FC<PhaseIndicatorProps> = ({ currentDay }) => {
         </div>
         <div className="flex-1">
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-bold text-white">
+            <h3 className="text-lg font-bold text-gray-900">
               Fase {phaseData.phase}: {phaseData.title}
             </h3>
           </div>
-          <p className="text-gray-300 text-sm">
+          <p className="text-gray-800 text-sm">
             {phaseData.description}
           </p>
         </div>
@@ -62,10 +62,10 @@ const PhaseIndicator: React.FC<PhaseIndicatorProps> = ({ currentDay }) => {
 
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-400">Progresso da fase</span>
+          <span className="text-gray-800">Progresso da fase</span>
           <span>{Math.round(phaseData.progress)}%</span>
         </div>
-        <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
           <div 
             className="h-full bg-current rounded-full transition-all duration-1000 ease-out"
             style={{ width: `${phaseData.progress}%` }}

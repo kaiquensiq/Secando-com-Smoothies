@@ -30,7 +30,7 @@ const WeekSelector: React.FC<WeekSelectorProps> = ({ selectedWeek, setSelectedWe
 
   return (
     <div className="space-y-3">
-      <h3 className="text-lg font-bold text-center text-white">
+      <h3 className="text-lg font-bold text-center text-gray-900">
         Selecione a Semana
       </h3>
       
@@ -51,7 +51,7 @@ const WeekSelector: React.FC<WeekSelectorProps> = ({ selectedWeek, setSelectedWe
                   ? colors.active 
                   : isUnlocked 
                     ? colors.inactive 
-                    : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                    : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                 }
                 ${isUnlocked && !isActive ? 'hover:scale-105' : ''}
               `}

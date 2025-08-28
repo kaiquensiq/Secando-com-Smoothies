@@ -37,7 +37,7 @@ const Profile: React.FC<ProfileProps> = ({ userData, updateUserData, onLogout })
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-50 text-gray-800">
       <div className="px-4 py-6 space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
@@ -49,15 +49,15 @@ const Profile: React.FC<ProfileProps> = ({ userData, updateUserData, onLogout })
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-r from-green-400 to-pink-400 flex items-center justify-center text-2xl font-bold text-gray-900">
+              <div className="w-full h-full bg-gradient-to-r from-green-500 to-pink-500 flex items-center justify-center text-2xl font-bold text-white">
                 {userData.name.charAt(0).toUpperCase()}
               </div>
             )}
           </div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="text-2xl font-bold text-pink-500">
             {userData.name}
           </h1>
-          <p className="text-gray-300">
+          <p className="text-gray-800">
             {userData.email}
           </p>
         </div>
@@ -71,8 +71,8 @@ const Profile: React.FC<ProfileProps> = ({ userData, updateUserData, onLogout })
               className={`
                 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200
                 ${activeSection === section.id 
-                  ? 'bg-green-400 text-gray-900 scale-105' 
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  ? 'bg-pink-500 text-white scale-105'
+              : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
                 }
               `}
             >

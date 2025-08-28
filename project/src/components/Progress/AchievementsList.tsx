@@ -96,23 +96,23 @@ const AchievementsList: React.FC<AchievementsListProps> = ({ userData }) => {
   const checkAchievementCondition = (achievement: any): boolean => {
     switch (achievement.id) {
       case 'primeira-semana':
-        return userData.currentDay >= 7;
+        return (userData.currentDay || 0) >= 7;
       case 'hidratacao-master':
-        return userData.badges.includes('hidratacao-master');
+        return userData.badges?.includes('hidratacao-master') || false;
       case 'smoothie-lover':
-        return userData.currentDay >= 10;
+        return (userData.currentDay || 0) >= 10;
       case 'foco-total':
-        return userData.currentDay >= 21;
+        return (userData.currentDay || 0) >= 21;
       case 'queimador-gordura':
-        return (userData.initialWeight - userData.currentWeight) >= 3;
+        return ((userData.initialWeight || 0) - (userData.currentWeight || 0)) >= 3;
       case 'influencer-healthy':
-        return userData.badges.includes('influencer-healthy');
+        return userData.badges?.includes('influencer-healthy') || false;
       case 'jejum-master':
-        return userData.badges.includes('jejum-master');
+        return userData.badges?.includes('jejum-master') || false;
       case 'meta-atingida':
-        return userData.currentWeight <= userData.targetWeight;
+        return (userData.currentWeight || 0) <= (userData.targetWeight || 0);
       default:
-        return userData.badges.includes(achievement.id);
+        return userData.badges?.includes(achievement.id) || false;
     }
   };
 
@@ -133,20 +133,20 @@ const AchievementsList: React.FC<AchievementsListProps> = ({ userData }) => {
       <div className="bg-gradient-to-r from-yellow-400/10 to-orange-400/10 border border-yellow-400/30 rounded-2xl p-6 text-center space-y-4">
         <Trophy className="w-12 h-12 mx-auto text-yellow-400" />
         <div className="space-y-2">
-          <h3 className="text-2xl font-bold text-white">
+          <h3 className="text-2xl font-bold text-gray-900">
             {earnedAchievements.length} / {allAchievements.length}
           </h3>
-          <p className="text-gray-300">
+          <p className="text-gray-800">
             Conquistas Desbloqueadas
           </p>
         </div>
         
         <div className="space-y-2">
-          <div className="flex justify-between text-sm text-gray-400">
+          <div className="flex justify-between text-sm text-gray-800">
             <span>Pontos de Conquistas</span>
             <span>{earnedPoints} / {totalPossiblePoints}</span>
           </div>
-          <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
+          <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
             <div 
               className="h-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full transition-all duration-1000 ease-out"
               style={{ width: `${(earnedPoints / totalPossiblePoints) * 100}%` }}
@@ -157,13 +157,13 @@ const AchievementsList: React.FC<AchievementsListProps> = ({ userData }) => {
 
       {/* Earned Achievements */}
       <div className="space-y-4">
-        <h3 className="text-lg font-bold text-white flex items-center space-x-2">
+        <h3 className="text-lg font-bold text-gray-900 flex items-center space-x-2">
           <Trophy className="w-5 h-5 text-yellow-400" />
           <span>Conquistas Desbloqueadas ({earnedAchievements.length})</span>
         </h3>
         
         {earnedAchievements.length === 0 ? (
-          <div className="bg-gray-800 rounded-xl p-6 text-center">
+          <div className="bg-white border border-gray-200 rounded-xl p-6 text-center">
             <div className="text-gray-400 mb-2">🏆</div>
             <p className="text-gray-400 text-sm">
               Continue no programa para desbloquear suas primeiras conquistas!
@@ -187,7 +187,7 @@ const AchievementsList: React.FC<AchievementsListProps> = ({ userData }) => {
                     </div>
                     <div className="flex-1 space-y-1">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-white">
+                        <h4 className="font-bold text-gray-900">
                           {achievement.title}
                         </h4>
                         <div className="flex items-center space-x-1 text-sm font-bold">
@@ -195,7 +195,7 @@ const AchievementsList: React.FC<AchievementsListProps> = ({ userData }) => {
                           <span>+{achievement.points}pts</span>
                         </div>
                       </div>
-                      <p className="text-gray-300 text-sm">
+                      <p className="text-gray-800 text-sm">
                         {achievement.description}
                       </p>
                       <div className="flex items-center space-x-2 text-xs">
@@ -213,7 +213,7 @@ const AchievementsList: React.FC<AchievementsListProps> = ({ userData }) => {
 
       {/* Available Achievements */}
       <div className="space-y-4">
-        <h3 className="text-lg font-bold text-white flex items-center space-x-2">
+        <h3 className="text-lg font-bold text-gray-900 flex items-center space-x-2">
           <Star className="w-5 h-5 text-gray-400" />
           <span>Próximas Conquistas ({availableAchievements.length})</span>
         </h3>
@@ -225,7 +225,7 @@ const AchievementsList: React.FC<AchievementsListProps> = ({ userData }) => {
             return (
               <div 
                 key={achievement.id} 
-                className="bg-gray-800 border border-gray-700 rounded-xl p-4 opacity-75"
+                className="bg-gray-50 border border-gray-200 rounded-xl p-4 opacity-75"
               >
                 <div className="flex items-center space-x-4">
                   <div className="flex-shrink-0">
@@ -233,7 +233,7 @@ const AchievementsList: React.FC<AchievementsListProps> = ({ userData }) => {
                   </div>
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-bold text-gray-300">
+                      <h4 className="font-bold text-gray-800">
                         {achievement.title}
                       </h4>
                       <div className="flex items-center space-x-1 text-sm font-bold text-gray-500">
@@ -246,7 +246,7 @@ const AchievementsList: React.FC<AchievementsListProps> = ({ userData }) => {
                     </p>
                     <div className="flex items-center space-x-2 text-xs">
                       <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                      <span className="text-gray-500">{achievement.condition}</span>
+                      <span className="text-gray-800">{achievement.condition}</span>
                     </div>
                   </div>
                 </div>

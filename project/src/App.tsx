@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Login from './components/Auth/Login';
 import Onboarding from './components/Onboarding/Onboarding';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -56,14 +56,12 @@ function App() {
   const [currentTab, setCurrentTab] = useState('dashboard');
   const { user, userData, loading, updateUserData, signOut } = useAuth();
 
+
+
   // Loading screen enquanto verifica autenticação
   if (loading) {
     return <LoadingScreen />;
   }
-
-  const handleLogout = async () => {
-    await signOut();
-  };
 
   // Show login first - before everything else
   if (!user) {
@@ -74,6 +72,10 @@ function App() {
   if (!userData || !userData.hasCompletedOnboarding) {
     return <Onboarding userData={userData} updateUserData={updateUserData} />;
   }
+
+  const handleLogout = async () => {
+    await signOut();
+  };
   const renderCurrentTab = () => {
     switch (currentTab) {
       case 'dashboard':
@@ -94,8 +96,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      <div className="max-w-md mx-auto bg-gray-900 min-h-screen">
+    <div className="min-h-screen bg-white">
+        <div className="max-w-md mx-auto bg-white min-h-screen">
         <main className="pb-20">
           {renderCurrentTab()}
         </main>

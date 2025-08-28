@@ -166,7 +166,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ currentDay }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-white text-gray-900">
       <div className="px-4 py-6 space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
@@ -174,7 +174,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ currentDay }) => {
           <h1 className="text-2xl font-bold text-green-400">
             Lista de Compras
           </h1>
-          <p className="text-gray-300">
+          <p className="text-gray-800">
             Ingredientes organizados por semana
           </p>
         </div>
@@ -198,7 +198,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ currentDay }) => {
                     ? colorClass.replace('/10', '/20').replace('/30', '/50')
                     : isUnlocked 
                       ? colorClass + ' hover:opacity-80' 
-                      : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                      : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                   }
                 `}
               >
@@ -229,7 +229,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ currentDay }) => {
             </div>
           </div>
           
-          <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
             <div 
               className="h-full bg-current rounded-full transition-all duration-500"
               style={{ width: `${(getCheckedCount() / getTotalItems()) * 100}%` }}
@@ -247,11 +247,11 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ currentDay }) => {
             const categoryChecked = items.filter(item => checkedItems.includes(item.id)).length;
             
             return (
-              <div key={category.key} className="bg-gray-800 rounded-2xl p-6 space-y-4">
+              <div key={category.key} className="bg-gray-50 rounded-2xl p-6 space-y-4 border border-gray-200">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Icon className={`w-5 h-5 ${category.color}`} />
-                    <h3 className="text-lg font-bold text-white">
+                    <h3 className="text-lg font-bold text-gray-900">
                       {category.label}
                     </h3>
                   </div>
@@ -272,7 +272,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ currentDay }) => {
                           p-3 rounded-xl border transition-all duration-200 cursor-pointer
                           ${isChecked 
                             ? 'bg-green-400/10 border-green-400/30 opacity-60' 
-                            : 'bg-gray-700 border-gray-600 hover:bg-gray-600'
+                            : 'bg-gray-200 border-gray-300 hover:bg-gray-300'
                           }
                         `}
                       >
@@ -284,7 +284,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ currentDay }) => {
                           </div>
                           
                           <div className="flex-1">
-                            <div className={`font-medium ${isChecked ? 'line-through text-gray-400' : 'text-white'}`}>
+                            <div className={`font-medium ${isChecked ? 'line-through text-gray-400' : 'text-gray-900'}`}>
                               {item.name}
                             </div>
                             <div className="text-gray-400 text-sm">
@@ -308,7 +308,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ currentDay }) => {
         {/* Tips */}
         <div className="bg-gradient-to-r from-blue-400/10 to-purple-400/10 border border-blue-400/30 rounded-2xl p-6 space-y-3">
           <h3 className="text-lg font-bold text-blue-400">💡 Dicas de Compras</h3>
-          <div className="space-y-2 text-sm text-gray-300">
+          <div className="space-y-2 text-sm text-gray-800">
             <p>• Compre frutas em diferentes estágios de maturação</p>
             <p>• Congele frutas maduras para smoothies mais cremosos</p>
             <p>• As substituições mantêm valor nutricional similar</p>

@@ -13,10 +13,10 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
-    name: userData.name,
-    email: userData.email,
-    age: userData.age,
-    height: userData.height
+    name: userData?.name || '',
+    email: userData?.email || '',
+    age: userData?.age || 0,
+    height: userData?.height || 0
   });
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
 
@@ -80,6 +80,9 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
   };
 
   const calculateIMC = () => {
+    if (!userData?.height || !userData?.currentWeight || userData.height === 0) {
+      return '0.0';
+    }
     const heightInMeters = userData.height / 100;
     return (userData.currentWeight / (heightInMeters * heightInMeters)).toFixed(1);
   };
@@ -127,8 +130,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
       </div>
 
       {/* Profile Photo Section */}
-      <div className="bg-gray-800 rounded-2xl p-6">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
           <Camera className="w-5 h-5 mr-2 text-green-400" />
           Foto de Perfil
         </h3>
@@ -136,7 +139,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
         <div className="flex items-center space-x-4">
           {/* Current Photo */}
           <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
-            {userData.profilePhoto ? (
+            {userData?.profilePhoto ? (
               <img 
                 src={userData.profilePhoto} 
                 alt="Foto de perfil" 
@@ -144,7 +147,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-r from-green-400 to-pink-400 flex items-center justify-center text-lg font-bold text-gray-900">
-                {userData.name.charAt(0).toUpperCase()}
+                {userData?.name ? userData.name.charAt(0).toUpperCase() : 'U'}
               </div>
             )}
           </div>
@@ -164,7 +167,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
                 />
               </label>
               
-              {userData.profilePhoto && (
+              {userData?.profilePhoto && (
                 <button
                   onClick={handleRemovePhoto}
                   className="flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-xl font-medium hover:bg-red-400 transition-all duration-200"
@@ -174,7 +177,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
                 </button>
               )}
             </div>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-800 text-sm">
               Formatos aceitos: JPG, PNG, GIF (máx. 5MB)
             </p>
           </div>
@@ -182,8 +185,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
       </div>
 
       {/* Personal Information */}
-      <div className="bg-gray-800 rounded-2xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-white flex items-center space-x-2">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <h3 className="text-lg font-bold text-gray-900 flex items-center space-x-2">
           <User className="w-5 h-5 text-green-400" />
           <span>Informações Pessoais</span>
         </h3>
@@ -191,7 +194,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
         <div className="grid grid-cols-1 gap-4">
           {/* Name */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-400 flex items-center space-x-2">
+            <label className="text-sm font-medium text-gray-800 flex items-center space-x-2">
               <User className="w-4 h-4" />
               <span>Nome Completo</span>
             </label>
@@ -200,18 +203,18 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
                 type="text"
                 value={editData.name}
                 onChange={(e) => setEditData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full bg-gray-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
               />
             ) : (
-              <div className="bg-gray-700 rounded-xl px-4 py-3 text-white">
-                {userData.name}
+              <div className="bg-gray-100 border border-gray-300 rounded-xl px-4 py-3 text-gray-900">
+                {userData?.name || 'Nome não informado'}
               </div>
             )}
           </div>
 
           {/* Email */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-400 flex items-center space-x-2">
+            <label className="text-sm font-medium text-gray-800 flex items-center space-x-2">
               <Mail className="w-4 h-4" />
               <span>E-mail</span>
             </label>
@@ -220,18 +223,18 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
                 type="email"
                 value={editData.email}
                 onChange={(e) => setEditData(prev => ({ ...prev, email: e.target.value }))}
-                className="w-full bg-gray-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
               />
             ) : (
-              <div className="bg-gray-700 rounded-xl px-4 py-3 text-white">
-                {userData.email}
+              <div className="bg-gray-100 rounded-xl px-4 py-3 text-gray-900">
+                {userData?.email || 'E-mail não informado'}
               </div>
             )}
           </div>
 
           {/* Age */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-400 flex items-center space-x-2">
+            <label className="text-sm font-medium text-gray-800 flex items-center space-x-2">
               <Calendar className="w-4 h-4" />
               <span>Idade</span>
             </label>
@@ -240,18 +243,18 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
                 type="number"
                 value={editData.age}
                 onChange={(e) => setEditData(prev => ({ ...prev, age: parseInt(e.target.value) }))}
-                className="w-full bg-gray-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
               />
             ) : (
-              <div className="bg-gray-700 rounded-xl px-4 py-3 text-white">
-                {userData.age} anos
+              <div className="bg-gray-100 rounded-xl px-4 py-3 text-gray-900">
+                {userData?.age || 0} anos
               </div>
             )}
           </div>
 
           {/* Height */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-400 flex items-center space-x-2">
+            <label className="text-sm font-medium text-gray-800 flex items-center space-x-2">
               <Ruler className="w-4 h-4" />
               <span>Altura</span>
             </label>
@@ -260,11 +263,11 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
                 type="number"
                 value={editData.height}
                 onChange={(e) => setEditData(prev => ({ ...prev, height: parseInt(e.target.value) }))}
-                className="w-full bg-gray-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
               />
             ) : (
-              <div className="bg-gray-700 rounded-xl px-4 py-3 text-white">
-                {userData.height} cm
+              <div className="bg-gray-100 rounded-xl px-4 py-3 text-gray-900">
+                {userData?.height || 0} cm
               </div>
             )}
           </div>
@@ -272,22 +275,22 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
       </div>
 
       {/* Health Metrics */}
-      <div className="bg-gray-800 rounded-2xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-white flex items-center space-x-2">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <h3 className="text-lg font-bold text-gray-900 flex items-center space-x-2">
           <Scale className="w-5 h-5 text-pink-400" />
           <span>Métricas de Saúde</span>
         </h3>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-700 rounded-xl p-4 text-center space-y-2">
-            <div className="text-sm text-gray-400">Peso Atual</div>
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center space-y-2">
+            <div className="text-sm text-gray-800">Peso Atual</div>
             <div className="text-2xl font-bold text-blue-400">
-              {userData.currentWeight}kg
+              {userData?.currentWeight || 0}kg
             </div>
           </div>
 
-          <div className="bg-gray-700 rounded-xl p-4 text-center space-y-2">
-            <div className="text-sm text-gray-400">IMC</div>
+          <div className="bg-gray-100 rounded-xl p-4 text-center space-y-2">
+            <div className="text-sm text-gray-800">IMC</div>
             <div className={`text-2xl font-bold ${imcCategory.color}`}>
               {calculateIMC()}
             </div>
@@ -296,50 +299,50 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ userData, updateUserData })
             </div>
           </div>
 
-          <div className="bg-gray-700 rounded-xl p-4 text-center space-y-2">
-            <div className="text-sm text-gray-400">Peso Perdido</div>
+          <div className="bg-gray-100 rounded-xl p-4 text-center space-y-2">
+            <div className="text-sm text-gray-800">Peso Perdido</div>
             <div className="text-2xl font-bold text-green-400">
-              {(userData.initialWeight - userData.currentWeight).toFixed(1)}kg
+              {((userData?.initialWeight || 0) - (userData?.currentWeight || 0)).toFixed(1)}kg
             </div>
           </div>
 
-          <div className="bg-gray-700 rounded-xl p-4 text-center space-y-2">
-            <div className="text-sm text-gray-400">Para a Meta</div>
+          <div className="bg-gray-100 rounded-xl p-4 text-center space-y-2">
+            <div className="text-sm text-gray-800">Para a Meta</div>
             <div className="text-2xl font-bold text-pink-400">
-              {Math.max(userData.currentWeight - userData.targetWeight, 0).toFixed(1)}kg
+              {Math.max((userData?.currentWeight || 0) - (userData?.targetWeight || 0), 0).toFixed(1)}kg
             </div>
           </div>
         </div>
       </div>
 
       {/* Program Stats */}
-      <div className="bg-gray-800 rounded-2xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-white flex items-center space-x-2">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <h3 className="text-lg font-bold text-gray-900 flex items-center space-x-2">
           <Calendar className="w-5 h-5 text-yellow-400" />
           <span>Estatísticas do Programa</span>
         </h3>
 
         <div className="space-y-3">
-          <div className="flex justify-between items-center py-2 border-b border-gray-700">
-            <span className="text-gray-400">Dia do programa</span>
-            <span className="text-white font-bold">{userData.currentDay}/21</span>
+          <div className="flex justify-between items-center py-2 border-b border-gray-200">
+            <span className="text-gray-800">Dia do programa</span>
+            <span className="text-gray-900 font-bold">{userData?.currentDay || 0}/21</span>
           </div>
 
-          <div className="flex justify-between items-center py-2 border-b border-gray-700">
-            <span className="text-gray-400">Data de início</span>
-            <span className="text-white font-bold">
-              {new Date(userData.startDate).toLocaleDateString('pt-BR')}
+          <div className="flex justify-between items-center py-2 border-b border-gray-200">
+            <span className="text-gray-800">Data de início</span>
+            <span className="text-gray-900 font-bold">
+              {userData?.startDate ? new Date(userData.startDate).toLocaleDateString('pt-BR') : 'Data não informada'}
             </span>
           </div>
 
-          <div className="flex justify-between items-center py-2 border-b border-gray-700">
-            <span className="text-gray-400">Total de pontos</span>
-            <span className="text-white font-bold">{userData.totalPoints} pts</span>
+          <div className="flex justify-between items-center py-2 border-b border-gray-200">
+            <span className="text-gray-800">Total de pontos</span>
+            <span className="text-gray-900 font-bold">{userData?.totalPoints || 0} pts</span>
           </div>
 
           <div className="flex justify-between items-center py-2">
-            <span className="text-gray-400">Badges conquistadas</span>
-            <span className="text-white font-bold">{userData.badges.length}</span>
+            <span className="text-gray-800">Badges conquistadas</span>
+            <span className="text-gray-900 font-bold">{userData?.badges?.length || 0}</span>
           </div>
         </div>
       </div>

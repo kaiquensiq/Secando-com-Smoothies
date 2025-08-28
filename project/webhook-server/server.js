@@ -3,6 +3,7 @@
 
 const express = require('express');
 const cors = require('cors');
+const crypto = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
@@ -22,6 +23,9 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 // Middlewares
 app.use(cors());
+// Middleware para capturar raw body (necessário para validação de assinatura)
+app.use('/webhook', express.raw({ type: 'application/json' }));
+// Middleware para parsing de JSON (para outras rotas)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -31,37 +35,96 @@ app.use((req, res, next) => {
   next();
 });
 
+// Função para validar assinatura do webhook
+function validateWebhookSignature(payload, signature, secret) {
+  if (!signature || !secret) {
+    console.log('❌ Assinatura ou secret não fornecidos');
+    return false;
+  }
+
+  // Remove o prefixo 'sha256=' se presente
+  const cleanSignature = signature.replace('sha256=', '');
+  
+  // Calcula a assinatura esperada
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(payload, 'utf8')
+    .digest('hex');
+
+  console.log('🔍 Debug da assinatura:');
+  console.log('  Payload length:', payload.length);
+  console.log('  Signature recebida:', cleanSignature);
+  console.log('  Signature esperada:', expectedSignature);
+  console.log('  Secret usado:', secret.substring(0, 10) + '...');
+
+  // Compara as assinaturas de forma segura
+  try {
+    const isValid = crypto.timingSafeEqual(
+      Buffer.from(cleanSignature, 'hex'),
+      Buffer.from(expectedSignature, 'hex')
+    );
+    console.log('  Resultado:', isValid ? '✅ Válida' : '❌ Inválida');
+    return isValid;
+  } catch (error) {
+    console.log('  Erro na comparação:', error.message);
+    return false;
+  }
+}
+
 // Função para processar webhook de pagamento
 async function handlePaymentWebhook(payload) {
   try {
-    const { event_type, data } = payload;
+    // Detectar formato do payload
+    let event_type, customer_email, customer_name, product_id, amount, currency, payment_status, transaction_id, created_at;
     
-    console.log('Processando webhook:', { event_type, email: data.customer_email });
+    // Formato do seu checkout específico
+    if (payload.event && payload.customer && payload.payment) {
+      event_type = payload.event;
+      customer_email = payload.customer.email;
+      customer_name = payload.customer.name;
+      product_id = payload.product.id;
+      amount = payload.payment.amount;
+      currency = 'BRL'; // Assumindo BRL baseado no contexto
+      payment_status = payload.payment.status;
+      transaction_id = payload.payment.id;
+      created_at = payload.createdAt ? new Date(payload.createdAt._seconds * 1000).toISOString() : new Date().toISOString();
+    } 
+    // Formato padrão (compatibilidade)
+    else if (payload.event_type && payload.data) {
+      event_type = payload.event_type;
+      const data = payload.data;
+      customer_email = data.customer_email;
+      customer_name = data.customer_name;
+      product_id = data.product_id;
+      amount = data.amount;
+      currency = data.currency;
+      payment_status = data.payment_status;
+      transaction_id = data.transaction_id;
+      created_at = data.created_at;
+    }
+    else {
+      throw new Error('Formato de payload não reconhecido');
+    }
+    
+    console.log('Processando webhook:', { event_type, email: customer_email, status: payment_status });
     
     // Verificar se é um evento de pagamento aprovado
-    if (event_type === 'payment.approved' || event_type === 'checkout.completed') {
-      const {
-        customer_email,
-        customer_name,
-        product_id,
-        amount,
-        currency,
-        payment_status,
-        transaction_id,
-        created_at
-      } = data;
+    if (event_type === 'pix.paid' || event_type === 'card.paid' || event_type === 'payment.approved' || event_type === 'checkout.completed' || payment_status === 'paid' || payment_status === 'approved') {
 
       // 1. Criar usuário no Supabase Auth (se não existir)
       let user;
       try {
-        // Tentar criar o usuário
+        // Tentar criar o usuário com senha padrão
+        const defaultPassword = 'smoothie123'; // Senha padrão que o usuário pode alterar depois
         const { data: authData, error: authError } = await supabase.auth.admin.createUser({
           email: customer_email,
+          password: defaultPassword,
           email_confirm: true, // Confirmar email automaticamente
           user_metadata: {
             name: customer_name || customer_email.split('@')[0],
             created_via: 'checkout_webhook',
-            product_purchased: product_id
+            product_purchased: product_id,
+            default_password: true // Indicar que está usando senha padrão
           }
         });
 
@@ -91,13 +154,14 @@ async function handlePaymentWebhook(payload) {
         .from('payments')
         .insert({
           user_id: user.id,
-          transaction_id,
+          email: customer_email,
+          payment_id: transaction_id,
           amount,
-          currency,
-          status: payment_status,
-          product_id,
-          payment_method: 'checkout',
-          created_at: created_at || new Date().toISOString()
+          currency: currency || 'BRL',
+          status: payment_status === 'paid' ? 'completed' : payment_status,
+          payment_method: event_type.includes('pix') ? 'pix' : event_type.includes('card') ? 'card' : 'checkout',
+          created_at: created_at || new Date().toISOString(),
+          completed_at: (payment_status === 'paid' || payment_status === 'approved') ? new Date().toISOString() : null
         });
 
       if (paymentError) {
@@ -111,7 +175,7 @@ async function handlePaymentWebhook(payload) {
       const { error: profileError } = await supabase
         .from('user_profiles')
         .upsert({
-          user_id: user.id,
+          id: user.id,
           name: customer_name || customer_email.split('@')[0],
           email: customer_email,
           has_completed_onboarding: false,
@@ -121,7 +185,7 @@ async function handlePaymentWebhook(payload) {
           streak: 0,
           updated_at: new Date().toISOString()
         }, {
-          onConflict: 'user_id'
+          onConflict: 'id'
         });
 
       if (profileError) {
@@ -195,9 +259,27 @@ app.get('/health', (req, res) => {
 // Rota principal do webhook
 app.post('/webhook/payment', async (req, res) => {
   try {
-    console.log('Webhook recebido:', req.body);
+    // Validar assinatura se WEBHOOK_SECRET estiver configurado
+    if (process.env.WEBHOOK_SECRET) {
+      const signature = req.headers['x-signature-256'] || req.headers['x-hub-signature-256'];
+      const rawBody = req.body.toString('utf8');
+      
+      if (!validateWebhookSignature(rawBody, signature, process.env.WEBHOOK_SECRET)) {
+        console.error('Assinatura do webhook inválida');
+        return res.status(401).json({
+          success: false,
+          message: 'Assinatura inválida'
+        });
+      }
+      
+      console.log('Assinatura do webhook validada com sucesso');
+    }
     
-    const result = await handlePaymentWebhook(req.body);
+    // Parse do JSON após validação
+    const payload = JSON.parse(req.body.toString('utf8'));
+    console.log('Webhook recebido:', payload);
+    
+    const result = await handlePaymentWebhook(payload);
     
     if (result.success) {
       res.status(200).json(result);
@@ -216,16 +298,29 @@ app.post('/webhook/payment', async (req, res) => {
 // Rota para testar o webhook (apenas para desenvolvimento)
 app.post('/webhook/test', async (req, res) => {
   const testPayload = {
-    event_type: 'payment.approved',
-    data: {
-      customer_email: req.body.email || 'teste@exemplo.com',
-      customer_name: req.body.name || 'Usuário Teste',
-      product_id: 'smoothie_program_21_days',
-      amount: 97.00,
-      currency: 'BRL',
-      payment_status: 'approved',
-      transaction_id: `test_${Date.now()}`,
-      created_at: new Date().toISOString()
+    event: 'pix.paid',
+    createdAt: { _seconds: Math.floor(Date.now() / 1000), _nanoseconds: 0 },
+    customer: {
+      name: req.body.name || 'Usuário Teste',
+      email: req.body.email || 'teste@exemplo.com',
+      document: null,
+      phone: null,
+      ip: '::1'
+    },
+    payment: {
+      id: `test_${Date.now()}`,
+      method: 'pix.paid',
+      status: 'paid',
+      amount: req.body.amount || 97
+    },
+    product: {
+      id: 'NfXimOHdgvd8GDqZ636a',
+      type: 'main'
+    },
+    webhook: {
+      id: 'test_webhook',
+      businessId: 'test_business',
+      events: ['pix.paid', 'card.paid']
     }
   };
 

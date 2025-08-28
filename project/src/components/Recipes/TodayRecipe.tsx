@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Clock, Users, Flame, Star, ChevronDown, ChevronUp, Zap } from 'lucide-react';
+import { Clock, Flame, Star, ChevronDown, ChevronUp, Zap } from 'lucide-react';
 import { Recipe } from './recipesData';
 import { getSmoothiesForDay, getDayMealPlan } from './mealPlanData';
 
@@ -50,10 +50,10 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
           </div>
 
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-bold text-gray-900">
               {todaySmoothie.name}
             </h2>
-            <p className="text-gray-300 leading-relaxed">
+            <p className="text-gray-800 leading-relaxed">
               Smoothie especialmente selecionado para o dia {currentDay} da sua jornada
             </p>
           </div>
@@ -62,11 +62,11 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
           <div className="flex items-center space-x-6 text-sm">
             <div className="flex items-center space-x-2">
               <Clock className="w-4 h-4 text-blue-400" />
-              <span className="text-gray-300">5-10 min</span>
+              <span className="text-gray-800">5-10 min</span>
             </div>
             <div className="flex items-center space-x-2">
               <Flame className="w-4 h-4 text-orange-400" />
-              <span className="text-gray-300">{todaySmoothie.calories || 'N/A'} kcal</span>
+              <span className="text-gray-800">{todaySmoothie.calories || 'N/A'} kcal</span>
             </div>
             <div className="flex items-center space-x-2">
               <Zap className="w-4 h-4 text-green-400" />
@@ -79,7 +79,7 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
         <div className="border-t border-gray-700">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="w-full p-4 flex items-center justify-between text-white hover:bg-gray-800/50 transition-colors"
+            className="w-full p-4 flex items-center justify-between text-gray-900 hover:bg-gray-100/50 transition-colors"
           >
             <span className="font-medium">Ver Ingredientes e Preparo</span>
             {isExpanded ? (
@@ -90,10 +90,10 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
           </button>
 
           {isExpanded && (
-            <div className="p-6 bg-gray-800/30 space-y-6">
+            <div className="p-6 bg-gray-100/30 space-y-6">
               {/* Ingredients */}
               <div>
-                <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
                   <Star className="w-5 h-5 text-yellow-400" />
                   Ingredientes
                 </h3>
@@ -101,7 +101,7 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
                   {todaySmoothie.items.map((ingredient, index) => (
                     <div key={index} className="flex items-center space-x-3 p-2 bg-gray-700/50 rounded-lg">
                       <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span className="text-gray-300">{ingredient}</span>
+                      <span className="text-gray-800">{ingredient}</span>
                     </div>
                   ))}
                 </div>
@@ -109,25 +109,25 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
 
               {/* Instructions */}
               <div>
-                <h3 className="text-lg font-bold text-white mb-3">Modo de Preparo</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-3">Modo de Preparo</h3>
                 <div className="space-y-3">
                   <div className="flex items-start space-x-3 p-3 bg-gray-700/50 rounded-lg">
                     <div className="w-6 h-6 bg-green-400 text-black rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                       1
                     </div>
-                    <span className="text-gray-300">Adicione todos os ingredientes no liquidificador</span>
+                    <span className="text-gray-800">Adicione todos os ingredientes no liquidificador</span>
                   </div>
                   <div className="flex items-start space-x-3 p-3 bg-gray-700/50 rounded-lg">
                     <div className="w-6 h-6 bg-green-400 text-black rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                       2
                     </div>
-                    <span className="text-gray-300">Bata por 1-2 minutos até ficar homogêneo</span>
+                    <span className="text-gray-800">Bata por 1-2 minutos até ficar homogêneo</span>
                   </div>
                   <div className="flex items-start space-x-3 p-3 bg-gray-700/50 rounded-lg">
                     <div className="w-6 h-6 bg-green-400 text-black rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                       3
                     </div>
-                    <span className="text-gray-300">Sirva imediatamente e aproveite!</span>
+                    <span className="text-gray-800">Sirva imediatamente e aproveite!</span>
                   </div>
                 </div>
               </div>
@@ -138,7 +138,7 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
                   <Zap className="w-4 h-4" />
                   Dica Especial
                 </div>
-                <div className="text-gray-300 text-sm">
+                <div className="text-gray-800 text-sm">
                   Este smoothie foi especialmente selecionado para o dia {currentDay} da Fase 1. 
                   Consuma conforme indicado no seu plano alimentar para melhores resultados!
                 </div>
@@ -153,8 +153,8 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
   // Fallback to original recipe display if no meal plan smoothie
   if (!recipeToShow) {
     return (
-      <div className="bg-gray-800 rounded-2xl p-6 text-center">
-        <h3 className="text-white text-lg font-semibold mb-2">Nenhum smoothie disponível</h3>
+      <div className="bg-gray-50 rounded-2xl p-6 text-center border border-gray-200">
+          <h3 className="text-gray-900 text-lg font-semibold mb-2">Nenhum smoothie disponível</h3>
         <p className="text-gray-400">Não há smoothie programado para hoje.</p>
       </div>
     );
@@ -171,16 +171,16 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
               Smoothie de Hoje
             </span>
           </div>
-          <div className={`px-3 py-1 rounded-full text-xs font-bold ${phaseColors[recipe.phase]}`}>
+          <div className={`px-3 py-1 rounded-full text-xs font-bold ${recipe.phase in phaseColors ? phaseColors[recipe.phase as keyof typeof phaseColors] : 'bg-gray-400/20 text-gray-400'}`}>
             {recipe.phase}
           </div>
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-2xl font-bold text-white">
+          <h2 className="text-2xl font-bold text-gray-900">
             {recipe.name}
           </h2>
-          <p className="text-gray-300 leading-relaxed">
+          <p className="text-gray-800 leading-relaxed">
             {recipe.description}
           </p>
         </div>
@@ -208,7 +208,7 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
           {recipe.tags.map((tag, index) => (
             <span 
               key={index}
-              className="px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-xs"
+              className="px-3 py-1 bg-gray-200 text-gray-800 rounded-full text-xs border border-gray-300"
             >
               #{tag}
             </span>
@@ -233,16 +233,16 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
 
       {/* Expanded Content */}
       {isExpanded && (
-        <div className="border-t border-gray-700 bg-gray-800/50 p-6 space-y-6">
+        <div className="border-t border-gray-200 bg-gray-100/50 p-6 space-y-6">
           {/* Ingredients */}
           <div className="space-y-3">
-            <h3 className="text-lg font-bold text-white flex items-center space-x-2">
+            <h3 className="text-lg font-bold text-gray-900 flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-400 rounded-full"></div>
               <span>Ingredientes</span>
             </h3>
             <ul className="space-y-2">
               {recipe.ingredients.map((ingredient, index) => (
-                <li key={index} className="flex items-center space-x-3 text-gray-300">
+                <li key={index} className="flex items-center space-x-3 text-gray-800">
                   <div className="w-1.5 h-1.5 bg-gray-500 rounded-full"></div>
                   <span>{ingredient}</span>
                 </li>
@@ -252,13 +252,13 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
 
           {/* Instructions */}
           <div className="space-y-3">
-            <h3 className="text-lg font-bold text-white flex items-center space-x-2">
+            <h3 className="text-lg font-bold text-gray-900 flex items-center space-x-2">
               <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
               <span>Modo de Preparo</span>
             </h3>
             <ol className="space-y-3">
               {recipe.instructions.map((instruction, index) => (
-                <li key={index} className="flex space-x-3 text-gray-300">
+                <li key={index} className="flex space-x-3 text-gray-800">
                   <div className="flex-shrink-0 w-6 h-6 bg-pink-400 text-gray-900 rounded-full flex items-center justify-center text-sm font-bold">
                     {index + 1}
                   </div>
@@ -274,7 +274,7 @@ const TodayRecipe: React.FC<TodayRecipeProps> = ({ recipe, currentDay }) => {
               <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
               <h4 className="font-bold text-yellow-400">Dica Especial</h4>
             </div>
-            <p className="text-gray-300 text-sm leading-relaxed">
+            <p className="text-gray-800 text-sm leading-relaxed">
               {recipe.tips}
             </p>
           </div>

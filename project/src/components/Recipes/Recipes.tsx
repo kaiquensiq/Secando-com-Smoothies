@@ -81,14 +81,14 @@ const Recipes: React.FC<RecipesProps> = ({ currentDay, userData, updateUserData 
   const extraRecipes = getExtraRecipes();
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-white text-gray-900">
       <div className="px-4 py-6 space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold text-green-400">
             Receitas de Smoothies
           </h1>
-          <p className="text-gray-300">
+          <p className="text-gray-800">
             21 dias de sabores incríveis
           </p>
         </div>
@@ -104,8 +104,8 @@ const Recipes: React.FC<RecipesProps> = ({ currentDay, userData, updateUserData 
             onClick={() => setShowExtras(false)}
             className={`px-6 py-2 rounded-lg font-medium transition-colors ${
               !showExtras
-                ? 'bg-green-500 text-white' 
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
             }`}
           >
             Programa Principal
@@ -114,8 +114,8 @@ const Recipes: React.FC<RecipesProps> = ({ currentDay, userData, updateUserData 
             onClick={() => setShowExtras(true)}
             className={`px-6 py-2 rounded-lg font-medium transition-colors ${
               showExtras 
-                ? 'bg-green-500 text-white' 
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
             }`}
           >
             Extras ({extraRecipes.length})
@@ -153,7 +153,7 @@ const Recipes: React.FC<RecipesProps> = ({ currentDay, userData, updateUserData 
               <h2 className="text-xl font-bold text-green-400">
                 Smoothies Extras
               </h2>
-              <p className="text-gray-300">
+              <p className="text-gray-800">
                 Receitas adicionais para variar seu cardápio
               </p>
             </div>

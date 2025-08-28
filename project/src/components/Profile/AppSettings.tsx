@@ -96,8 +96,8 @@ const AppSettings: React.FC<AppSettingsProps> = ({ userData, onLogout }) => {
   return (
     <div className="space-y-6">
       {/* Notifications */}
-      <div className="bg-gray-800 rounded-2xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-white flex items-center space-x-2">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <h3 className="text-lg font-bold text-gray-900 flex items-center space-x-2">
           <Bell className="w-5 h-5 text-blue-400" />
           <span>Notificações</span>
         </h3>
@@ -105,7 +105,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({ userData, onLogout }) => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <div className="text-white font-medium">
+              <div className="text-gray-900 font-medium">
                 Lembretes diários
               </div>
               <div className="text-gray-400 text-sm">
@@ -134,13 +134,13 @@ const AppSettings: React.FC<AppSettingsProps> = ({ userData, onLogout }) => {
               type="time"
               value={reminderTime}
               onChange={(e) => setReminderTime(e.target.value)}
-              className="bg-gray-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
+              className="bg-white border border-gray-300 text-gray-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
             />
           </div>
 
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <div className="text-white font-medium">
+              <div className="text-gray-900 font-medium">
                 Sons de celebração
               </div>
               <div className="text-gray-400 text-sm">
@@ -164,8 +164,8 @@ const AppSettings: React.FC<AppSettingsProps> = ({ userData, onLogout }) => {
       </div>
 
       {/* Display */}
-      <div className="bg-gray-800 rounded-2xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-white flex items-center space-x-2">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <h3 className="text-lg font-bold text-gray-900 flex items-center space-x-2">
           <Smartphone className="w-5 h-5 text-purple-400" />
           <span>Aparência</span>
         </h3>
@@ -173,7 +173,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({ userData, onLogout }) => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <div className="text-white font-medium flex items-center space-x-2">
+              <div className="text-gray-900 font-medium flex items-center space-x-2">
                 {darkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
                 <span>Modo escuro</span>
               </div>
@@ -198,8 +198,8 @@ const AppSettings: React.FC<AppSettingsProps> = ({ userData, onLogout }) => {
       </div>
 
       {/* Data & Privacy */}
-      <div className="bg-gray-800 rounded-2xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-white flex items-center space-x-2">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <h3 className="text-lg font-bold text-gray-900 flex items-center space-x-2">
           <Download className="w-5 h-5 text-green-400" />
           <span>Dados</span>
         </h3>
@@ -222,37 +222,37 @@ const AppSettings: React.FC<AppSettingsProps> = ({ userData, onLogout }) => {
           </button>
         </div>
 
-        <div className="text-xs text-gray-400 leading-relaxed">
+        <div className="text-xs text-gray-800 leading-relaxed">
           Seus dados são criptografados e nunca compartilhados com terceiros. 
           Você pode exportar ou excluir suas informações a qualquer momento.
         </div>
       </div>
 
       {/* About App */}
-      <div className="bg-gray-800 rounded-2xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-white">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <h3 className="text-lg font-bold text-gray-900">
           Sobre o App
         </h3>
 
         <div className="space-y-3 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-400">Versão</span>
-            <span className="text-white font-medium">1.0.0</span>
+            <span className="text-gray-900 font-medium">1.0.0</span>
           </div>
           
           <div className="flex justify-between">
             <span className="text-gray-400">Última atualização</span>
-            <span className="text-white font-medium">Janeiro 2025</span>
+            <span className="text-gray-900 font-medium">Janeiro 2025</span>
           </div>
 
           <div className="flex justify-between">
             <span className="text-gray-400">Desenvolvedor</span>
-            <span className="text-white font-medium">Secando com Smoothies</span>
+            <span className="text-gray-900 font-medium">Secando com Smoothies</span>
           </div>
         </div>
 
-        <div className="pt-4 border-t border-gray-700">
-          <p className="text-xs text-gray-400 leading-relaxed">
+        <div className="pt-4 border-t border-gray-200">
+          <p className="text-xs text-gray-800 leading-relaxed">
             Feito com 💚 para transformar sua relação com a alimentação e 
             ajudar você a conquistar seus objetivos de saúde de forma 
             sustentável e prazerosa.
@@ -284,7 +284,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({ userData, onLogout }) => {
       </div>
 
       {/* Logout Section */}
-      <div className="bg-gray-800 rounded-2xl p-6">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6">
         <button 
           onClick={onLogout}
           className="w-full bg-red-400/10 border border-red-400/30 text-red-400 py-4 rounded-xl font-medium hover:bg-red-400/20 transition-all duration-200 flex items-center justify-center space-x-2"
@@ -292,7 +292,7 @@ const AppSettings: React.FC<AppSettingsProps> = ({ userData, onLogout }) => {
           <LogOut className="w-5 h-5" />
           <span>Sair da conta</span>
         </button>
-        <p className="text-xs text-gray-400 text-center mt-3">
+        <p className="text-xs text-gray-800 text-center mt-3">
           Você será redirecionado para a tela de login
         </p>
       </div>

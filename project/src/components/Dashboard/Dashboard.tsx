@@ -20,25 +20,25 @@ const Dashboard: React.FC<DashboardProps> = ({ userData, updateUserData, setCurr
   const progressPercentage = (userData.currentDay / 21) * 100;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-50 text-gray-800">
       <div className="px-4 py-6 space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-2xl font-bold text-green-400">
+          <h1 className="text-2xl font-bold text-pink-500">
             Olá, {userData.name.split(' ')[0]}! 👋
           </h1>
-          <p className="text-gray-300">
+          <p className="text-gray-800">
             Dia {userData.currentDay} de 21 • {remainingDays} dias restantes
           </p>
           
           {/* Progress Bar */}
-          <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden mt-4">
+          <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden mt-4">
             <div 
-              className="h-full bg-gradient-to-r from-green-400 to-pink-400 rounded-full transition-all duration-1000 ease-out"
+              className="h-full bg-gradient-to-r from-green-500 to-pink-500 rounded-full transition-all duration-1000 ease-out"
               style={{ width: `${progressPercentage}%` }}
             ></div>
           </div>
-          <div className="text-sm text-gray-400">
+          <div className="text-sm text-gray-800">
             {Math.round(progressPercentage)}% concluído
           </div>
         </div>
@@ -50,10 +50,10 @@ const Dashboard: React.FC<DashboardProps> = ({ userData, updateUserData, setCurr
         <div className={`
           text-center py-6 rounded-2xl border
           ${remainingDays <= 3 
-            ? 'bg-red-400/10 border-red-400/30 text-red-400' 
+            ? 'bg-pink-100 border-pink-300 text-pink-500' 
             : remainingDays <= 7 
-              ? 'bg-yellow-400/10 border-yellow-400/30 text-yellow-400'
-              : 'bg-green-400/10 border-green-400/30 text-green-400'
+              ? 'bg-orange-100 border-orange-300 text-orange-500'
+              : 'bg-green-100 border-green-300 text-green-500'
           }
         `}>
           <div className="text-4xl font-bold">

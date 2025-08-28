@@ -47,7 +47,7 @@ const MotivationalMessage: React.FC<MotivationalMessageProps> = ({ currentDay })
       <h3 className="text-lg font-bold">
         {title}
       </h3>
-      <p className="text-gray-300 text-sm leading-relaxed">
+      <p className="text-gray-800 text-sm leading-relaxed">
         {message}
       </p>
     </div>

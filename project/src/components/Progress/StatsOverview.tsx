@@ -7,17 +7,18 @@ interface StatsOverviewProps {
 }
 
 const StatsOverview: React.FC<StatsOverviewProps> = ({ userData }) => {
-  const weightLoss = userData.initialWeight - userData.currentWeight;
-  const remainingWeight = userData.currentWeight - userData.targetWeight;
-  const progressPercentage = ((userData.initialWeight - userData.currentWeight) / (userData.initialWeight - userData.targetWeight)) * 100;
-  const averageWeightLossPerDay = weightLoss / userData.currentDay;
-  const estimatedDaysToGoal = remainingWeight > 0 ? Math.ceil(remainingWeight / averageWeightLossPerDay) : 0;
+  const weightLoss = (userData.initialWeight || 0) - (userData.currentWeight || 0);
+  const remainingWeight = (userData.currentWeight || 0) - (userData.targetWeight || 0);
+  const progressPercentage = userData.initialWeight && userData.targetWeight ? 
+    (((userData.initialWeight - userData.currentWeight) / (userData.initialWeight - userData.targetWeight)) * 100) : 0;
+  const averageWeightLossPerDay = userData.currentDay ? weightLoss / userData.currentDay : 0;
+  const estimatedDaysToGoal = remainingWeight > 0 && averageWeightLossPerDay > 0 ? Math.ceil(remainingWeight / averageWeightLossPerDay) : 0;
 
   const stats = [
     {
       icon: Scale,
       title: 'Peso Atual',
-      value: `${userData.currentWeight}kg`,
+      value: `${userData.currentWeight || 0}kg`,
       change: `-${weightLoss.toFixed(1)}kg`,
       color: 'blue',
       positive: true
@@ -41,15 +42,15 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ userData }) => {
     {
       icon: Calendar,
       title: 'Dias Ativos',
-      value: `${userData.currentDay}/21`,
-      change: `${21 - userData.currentDay} restantes`,
+      value: `${userData.currentDay || 0}/21`,
+      change: `${21 - (userData.currentDay || 0)} restantes`,
       color: 'purple',
       positive: true
     },
     {
       icon: Award,
       title: 'Badges Ganhas',
-      value: userData.badges.length.toString(),
+      value: (userData.badges?.length || 0).toString(),
       change: 'conquistas',
       color: 'yellow',
       positive: true
@@ -57,20 +58,20 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ userData }) => {
     {
       icon: Zap,
       title: 'Total de Pontos',
-      value: userData.totalPoints.toString(),
-      change: `${Math.round(userData.totalPoints / userData.currentDay)} pts/dia`,
+      value: (userData.totalPoints || 0).toString(),
+      change: userData.currentDay ? `${Math.round((userData.totalPoints || 0) / userData.currentDay)} pts/dia` : '0 pts/dia',
       color: 'orange',
       positive: true
     }
   ];
 
   const colorClasses = {
-    blue: 'bg-blue-400/10 border-blue-400/30 text-blue-400',
-    green: 'bg-green-400/10 border-green-400/30 text-green-400',
-    pink: 'bg-pink-400/10 border-pink-400/30 text-pink-400',
-    purple: 'bg-purple-400/10 border-purple-400/30 text-purple-400',
-    yellow: 'bg-yellow-400/10 border-yellow-400/30 text-yellow-400',
-    orange: 'bg-orange-400/10 border-orange-400/30 text-orange-400'
+    blue: 'bg-blue-100 border-blue-300 text-blue-600',
+    green: 'bg-green-100 border-green-300 text-green-600',
+    pink: 'bg-pink-100 border-pink-300 text-pink-600',
+    purple: 'bg-purple-100 border-purple-300 text-purple-600',
+    yellow: 'bg-yellow-100 border-yellow-300 text-yellow-600',
+    orange: 'bg-orange-100 border-orange-300 text-orange-600'
   };
 
   return (
@@ -78,15 +79,15 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ userData }) => {
       {/* Progress Summary */}
       <div className="bg-gradient-to-r from-green-400/10 to-pink-400/10 border border-green-400/30 rounded-2xl p-6 text-center space-y-4">
         <div className="space-y-2">
-          <h3 className="text-2xl font-bold text-white">
+          <h3 className="text-2xl font-bold text-gray-900">
             {Math.round(progressPercentage)}% da Meta
           </h3>
-          <p className="text-gray-300">
+          <p className="text-gray-800">
             Você está indo muito bem!
           </p>
         </div>
         
-        <div className="w-full h-4 bg-gray-700 rounded-full overflow-hidden">
+        <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
           <div 
             className="h-full bg-gradient-to-r from-green-400 to-pink-400 rounded-full transition-all duration-1000 ease-out"
             style={{ width: `${Math.min(progressPercentage, 100)}%` }}
@@ -98,7 +99,7 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ userData }) => {
             <div className="text-yellow-400 font-bold text-lg">
               🎉 Parabéns! Meta atingida!
             </div>
-            <div className="text-gray-300 text-sm mt-1">
+            <div className="text-gray-800 text-sm mt-1">
               Continue seguindo o programa para manter os resultados
             </div>
           </div>
@@ -121,7 +122,7 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ userData }) => {
               </div>
               
               <div className="space-y-1">
-                <div className="text-white text-sm font-medium">
+                <div className="text-gray-900 text-sm font-medium">
                   {stat.title}
                 </div>
                 <div className={`text-xs ${stat.positive ? 'text-green-400' : 'text-red-400'}`}>
@@ -134,8 +135,8 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ userData }) => {
       </div>
 
       {/* Weekly Breakdown */}
-      <div className="bg-gray-800 rounded-2xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-white text-center">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <h3 className="text-lg font-bold text-gray-900 text-center">
           Progresso por Semana
         </h3>
         
@@ -147,11 +148,7 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ userData }) => {
             const isCompleted = userData.currentDay > endDay;
             const weekProgress = isCompleted ? 100 : isCurrentWeek ? ((userData.currentDay - startDay + 1) / 7) * 100 : 0;
             
-            const weekColors = {
-              1: 'green',
-              2: 'orange', 
-              3: 'purple'
-            };
+
             
             const weekTitles = {
               1: 'Desintoxicação',
@@ -162,15 +159,15 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ userData }) => {
             return (
               <div key={week} className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-300">
+                  <span className="text-gray-800">
                     Semana {week}: {weekTitles[week as keyof typeof weekTitles]}
                   </span>
-                  <span className="text-gray-400">
+                  <span className="text-gray-800">
                     {Math.round(weekProgress)}%
                   </span>
                 </div>
                 
-                <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div 
                     className={`h-full rounded-full transition-all duration-1000 ease-out
                       ${week === 1 ? 'bg-green-400' : 

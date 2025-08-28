@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Camera, Scale, Droplets, Clock, CheckCircle, Plus, Minus } from 'lucide-react';
 import { UserData } from '../../App';
 import { useAuth } from '../../contexts/AuthContext';
@@ -17,43 +17,71 @@ const QuickActions: React.FC<QuickActionsProps> = ({ currentDay, userData, updat
   const hasCheckedIn = !!todayCheckin;
 
   // Reset hydration if it's a new day
-  const today = new Date().toDateString();
-  if (userData.hydration && userData.hydration.lastUpdated !== today) {
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const lastUpdatedDate = userData.hydration?.lastUpdated ? new Date(userData.hydration.lastUpdated).toISOString().split('T')[0] : null;
+    
+    if (userData.hydration && lastUpdatedDate !== today) {
+      updateUserData({
+        hydration: {
+          ...userData.hydration,
+          currentGlasses: 0,
+          lastUpdated: new Date().toISOString()
+        }
+      });
+    }
+  }, [userData.hydration, updateUserData]);
+
+  const handleHydrationChange = async (increment: boolean) => {
+    if (!userData.hydration || !user) {
+      console.log('Dados de hidratação ou usuário não disponíveis');
+      return;
+    }
+    
+    const currentGlasses = userData.hydration.currentGlasses;
+    const newGlasses = increment 
+      ? Math.min(currentGlasses + 1, userData.hydration.dailyGoal + 5)
+      : Math.max(currentGlasses - 1, 0);
+    
+    console.log(`Alterando hidratação: ${currentGlasses} -> ${newGlasses}`);
+    
+    // Atualizar estado local imediatamente para melhor UX
     updateUserData({
       hydration: {
         ...userData.hydration,
-        currentGlasses: 0,
-        lastUpdated: today
+        currentGlasses: newGlasses,
+        lastUpdated: new Date().toISOString()
       }
     });
-  }
-
-  const handleHydrationChange = async (increment: boolean) => {
-    if (!userData.hydration || !user) return;
-    
-    const newGlasses = increment 
-      ? Math.min(userData.hydration.currentGlasses + 1, userData.hydration.dailyGoal + 5)
-      : Math.max(userData.hydration.currentGlasses - 1, 0);
     
     try {
       // Atualizar hidratação no Supabase
       const { error } = await userService.updateHydration(user.id, newGlasses);
       
       if (error) {
-        console.error('Erro ao atualizar hidratação:', error);
+        console.error('Erro ao atualizar hidratação no Supabase:', error);
+        // Reverter mudança local em caso de erro
+        updateUserData({
+          hydration: {
+            ...userData.hydration,
+            currentGlasses: currentGlasses,
+            lastUpdated: new Date().toISOString()
+          }
+        });
         return;
       }
       
-      // Atualizar estado local
+      console.log('Hidratação atualizada com sucesso');
+    } catch (error) {
+      console.error('Erro inesperado ao atualizar hidratação:', error);
+      // Reverter mudança local em caso de erro
       updateUserData({
         hydration: {
           ...userData.hydration,
-          currentGlasses: newGlasses,
-          lastUpdated: today
+          currentGlasses: currentGlasses,
+          lastUpdated: new Date().toISOString()
         }
       });
-    } catch (error) {
-      console.error('Erro ao atualizar hidratação:', error);
     }
   };
 
@@ -108,7 +136,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({ currentDay, userData, updat
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-bold text-center text-white">
+      <h3 className="text-lg font-bold text-center text-gray-900">
         Ações Rápidas
       </h3>
       
@@ -131,7 +159,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({ currentDay, userData, updat
                 <div className={`font-bold ${action.textColor}`}>
                   {action.label}
                 </div>
-                <div className={`text-xs opacity-75 ${action.textColor}`}>
+                <div className={`text-xs opacity-90 ${action.textColor}`}>
                   {action.description}
                 </div>
               </div>
@@ -149,7 +177,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({ currentDay, userData, updat
                 <Droplets className="w-6 h-6 text-gray-900" />
                 <div>
                   <div className="font-bold text-gray-900">Hidratação</div>
-                  <div className="text-xs opacity-75 text-gray-900">
+                  <div className="text-xs opacity-90 text-gray-900">
                     {userData.hydration.currentGlasses}/{userData.hydration.dailyGoal} copos
                   </div>
                 </div>

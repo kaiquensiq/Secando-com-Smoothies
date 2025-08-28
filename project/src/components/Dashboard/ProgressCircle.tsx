@@ -51,7 +51,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ userData }) => {
           <div className="text-4xl font-bold text-green-400">
             Dia {userData.currentDay}
           </div>
-          <div className="text-gray-300 text-sm">de 21</div>
+          <div className="text-gray-800 text-sm">de 21</div>
           <div className="text-2xl font-bold text-pink-400 mt-2">
             {Math.round(progress)}%
           </div>
@@ -63,7 +63,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ userData }) => {
         <div className="text-3xl font-bold text-yellow-400">
           {remainingDays}
         </div>
-        <div className="text-gray-300 text-sm uppercase tracking-wider">
+        <div className="text-gray-800 text-sm uppercase tracking-wider">
           Dias Restantes
         </div>
       </div>
@@ -72,7 +72,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ userData }) => {
       {userData.currentDay === 7 && (
         <div className="bg-green-400/10 border border-green-400/30 rounded-xl p-4 text-center animate-pulse">
           <div className="text-green-400 font-bold mb-1">🎉 Primeira semana completa!</div>
-          <div className="text-gray-300 text-sm">Continue assim, você está indo muito bem!</div>
+          <div className="text-gray-800 text-sm">Continue assim, você está indo muito bem!</div>
         </div>
       )}
     </div>

@@ -76,7 +76,7 @@ const SupportHelp: React.FC = () => {
           placeholder="Buscar nas perguntas frequentes..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-gray-800 text-white rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
+          className="w-full bg-white border border-gray-300 text-gray-900 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400"
         />
       </div>
 
@@ -90,7 +90,7 @@ const SupportHelp: React.FC = () => {
               px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200
               ${selectedCategory === category 
                 ? 'bg-green-400 text-gray-900' 
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
               }
             `}
           >
@@ -102,7 +102,7 @@ const SupportHelp: React.FC = () => {
       {/* FAQ List */}
       <div className="space-y-3">
         {filteredFaqs.length === 0 ? (
-          <div className="bg-gray-800 rounded-xl p-8 text-center">
+          <div className="bg-white border border-gray-200 rounded-xl p-8 text-center">
             <HelpCircle className="w-12 h-12 text-gray-500 mx-auto mb-4" />
             <p className="text-gray-400">
               Nenhuma pergunta encontrada para "{searchTerm}"
@@ -110,16 +110,16 @@ const SupportHelp: React.FC = () => {
           </div>
         ) : (
           filteredFaqs.map((faq) => (
-            <div key={faq.id} className="bg-gray-800 rounded-xl overflow-hidden">
+            <div key={faq.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
               <button
                 onClick={() => setExpandedFaq(expandedFaq === faq.id ? null : faq.id)}
-                className="w-full p-4 text-left flex items-center justify-between hover:bg-gray-700/50 transition-all duration-200"
+                className="w-full p-4 text-left flex items-center justify-between hover:bg-gray-50 transition-all duration-200"
               >
                 <div className="flex-1 space-y-1">
-                  <div className="text-white font-medium">
+                  <div className="text-gray-900 font-medium">
                     {faq.question}
                   </div>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-gray-800">
                     {faq.category}
                   </div>
                 </div>
@@ -131,8 +131,8 @@ const SupportHelp: React.FC = () => {
               </button>
               
               {expandedFaq === faq.id && (
-                <div className="px-4 pb-4 border-t border-gray-700">
-                  <p className="text-gray-300 text-sm leading-relaxed mt-4">
+                <div className="px-4 pb-4 border-t border-gray-200">
+                  <p className="text-gray-800 text-sm leading-relaxed mt-4">
                     {faq.answer}
                   </p>
                 </div>
@@ -144,10 +144,10 @@ const SupportHelp: React.FC = () => {
 
       {/* Contact Support */}
       <div className="bg-gradient-to-r from-green-400/10 to-blue-400/10 border border-green-400/30 rounded-2xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-white text-center">
+        <h3 className="text-lg font-bold text-gray-900 text-center">
           Ainda precisa de ajuda?
         </h3>
-        <p className="text-gray-300 text-sm text-center">
+        <p className="text-gray-800 text-sm text-center">
           Nossa equipe está pronta para te ajudar a alcançar seus objetivos!
         </p>
         

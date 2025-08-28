@@ -1,8 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Configurações do Supabase
-const supabaseUrl = 'https://hjkxsjpujiyeefjkdgcc.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhqa3hzanB1aml5ZWVmamtkZ2NjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyMzM0NTAsImV4cCI6MjA3MTgwOTQ1MH0.qz202wpxWFlLM2Rx3aCO7DygA_l1W9Bl0W8o0xkLQDQ';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Variáveis de ambiente do Supabase não encontradas. Verifique se VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY estão definidas no arquivo .env');
+}
 
 // Criar cliente Supabase
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -294,10 +298,26 @@ export const auth = {
     return { data, error };
   },
 
+  // Login direto com email e senha
+  signInWithPassword: async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    return { data, error };
+  },
+
   // Logout
   signOut: async () => {
-    const { error } = await supabase.auth.signOut();
-    return { error };
+    try {
+      const { error } = await supabase.auth.signOut();
+      return { error };
+    } catch (networkError) {
+      // Se houver erro de rede, ainda retornamos sucesso
+      // pois o importante é limpar o estado local
+      console.warn('Erro de rede no logout, mas continuando:', networkError);
+      return { error: null };
+    }
   },
 
   // Obter usuário atual
@@ -330,8 +350,7 @@ export const userService = {
       .from('user_profiles')
       .update(updates)
       .eq('id', userId)
-      .select()
-      .single();
+      .select();
     return { data, error };
   },
 

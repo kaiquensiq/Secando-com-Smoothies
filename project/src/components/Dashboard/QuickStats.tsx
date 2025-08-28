@@ -7,17 +7,21 @@ interface QuickStatsProps {
 }
 
 const QuickStats: React.FC<QuickStatsProps> = ({ userData }) => {
-  const weightLoss = userData.initialWeight - userData.currentWeight;
-  const remainingWeight = userData.currentWeight - userData.targetWeight;
-  const progressPercentage = ((userData.initialWeight - userData.currentWeight) / (userData.initialWeight - userData.targetWeight)) * 100;
+  const weightLoss = userData.initialWeight && userData.currentWeight 
+    ? (userData.initialWeight - userData.currentWeight || 0)
+    : 0;
+  const remainingWeight = (userData?.currentWeight || 0) - (userData?.targetWeight || 0);
+  const totalWeightToLose = (userData?.initialWeight || 0) - (userData?.targetWeight || 0);
+  const progressPercentage = totalWeightToLose > 0 ? 
+    (((userData?.initialWeight || 0) - (userData?.currentWeight || 0)) / totalWeightToLose) * 100 : 0;
 
   const stats = [
     {
       icon: Scale,
       label: 'Peso Atual',
-      value: `${userData.currentWeight}kg`,
-      color: 'text-blue-400',
-      bg: 'bg-blue-400/10'
+      value: `${userData?.currentWeight || 0}kg`,
+      color: 'text-blue-600',
+    bg: 'bg-blue-100'
     },
     {
       icon: TrendingDown,
@@ -36,7 +40,7 @@ const QuickStats: React.FC<QuickStatsProps> = ({ userData }) => {
     {
       icon: Zap,
       label: 'Pontos',
-      value: userData.totalPoints.toString(),
+      value: (userData?.totalPoints || 0).toString(),
       color: 'text-yellow-400',
       bg: 'bg-yellow-400/10'
     }
@@ -44,7 +48,7 @@ const QuickStats: React.FC<QuickStatsProps> = ({ userData }) => {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-bold text-center text-white">
+      <h3 className="text-lg font-bold text-center text-gray-900">
         Suas Conquistas
       </h3>
       
@@ -52,13 +56,13 @@ const QuickStats: React.FC<QuickStatsProps> = ({ userData }) => {
         {stats.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <div key={index} className={`${stat.bg} rounded-xl p-4 text-center space-y-2 border border-gray-700/50`}>
+            <div key={index} className={`${stat.bg} rounded-xl p-4 text-center space-y-2 border border-gray-200`}>
               <Icon className={`w-6 h-6 mx-auto ${stat.color}`} />
               <div className="space-y-1">
                 <div className={`text-2xl font-bold ${stat.color}`}>
                   {stat.value}
                 </div>
-                <div className="text-gray-400 text-xs">
+                <div className="text-gray-800 text-xs">
                   {stat.label}
                 </div>
               </div>
@@ -69,11 +73,11 @@ const QuickStats: React.FC<QuickStatsProps> = ({ userData }) => {
 
       {/* Progress bar */}
       <div className="space-y-2">
-        <div className="flex justify-between text-sm text-gray-400">
+        <div className="flex justify-between text-sm text-gray-800">
           <span>Progresso da Meta</span>
           <span>{Math.min(progressPercentage, 100).toFixed(0)}%</span>
         </div>
-        <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
+        <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
           <div 
             className="h-full bg-gradient-to-r from-green-400 to-pink-400 rounded-full transition-all duration-1000 ease-out"
             style={{ width: `${Math.min(progressPercentage, 100)}%` }}

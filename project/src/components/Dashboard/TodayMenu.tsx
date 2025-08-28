@@ -12,12 +12,12 @@ const TodayMenu: React.FC<TodayMenuProps> = ({ currentDay }) => {
 
   if (!dayPlan) {
     return (
-      <div className="bg-gray-800 rounded-2xl p-6">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <Utensils className="w-5 h-5 text-green-400" />
           Menu do Dia {currentDay}
         </h3>
-        <p className="text-gray-400">Plano alimentar não disponível para este dia.</p>
+        <p className="text-gray-800">Plano alimentar não disponível para este dia.</p>
       </div>
     );
   }
@@ -29,7 +29,7 @@ const TodayMenu: React.FC<TodayMenuProps> = ({ currentDay }) => {
       case 'Lanche da manhã':
         return { icon: Sun, color: 'text-orange-400', bg: 'bg-orange-400/10', time: '10:00' };
       case 'Almoço':
-        return { icon: Utensils, color: 'text-blue-400', bg: 'bg-blue-400/10', time: '12:00' };
+        return { icon: Utensils, color: 'text-blue-600', bg: 'bg-blue-100', time: '12:00' };
       case 'Lanche da tarde':
         return { icon: Sunset, color: 'text-pink-400', bg: 'bg-pink-400/10', time: '15:00' };
       case 'Jantar':
@@ -37,14 +37,14 @@ const TodayMenu: React.FC<TodayMenuProps> = ({ currentDay }) => {
       case 'Ceia':
         return { icon: Moon, color: 'text-indigo-400', bg: 'bg-indigo-400/10', time: '21:00' };
       default:
-        return { icon: Utensils, color: 'text-gray-400', bg: 'bg-gray-400/10', time: '--:--' };
+        return { icon: Utensils, color: 'text-gray-800', bg: 'bg-gray-100', time: '--:--' };
     }
   };
 
   return (
-    <div className="bg-gray-800 rounded-2xl p-6">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
           <Utensils className="w-5 h-5 text-green-400" />
           Menu do Dia {currentDay}
         </h3>
@@ -56,7 +56,7 @@ const TodayMenu: React.FC<TodayMenuProps> = ({ currentDay }) => {
 
       <div className="mb-4 p-3 bg-green-400/10 rounded-lg border border-green-400/20">
         <h4 className="text-green-400 font-medium text-sm mb-1">{dayPlan.phase}</h4>
-        <p className="text-gray-300 text-xs">{dayPlan.objective}</p>
+        <p className="text-gray-800 text-xs">{dayPlan.objective}</p>
       </div>
 
       <div className="space-y-4">
@@ -65,15 +65,15 @@ const TodayMenu: React.FC<TodayMenuProps> = ({ currentDay }) => {
           const IconComponent = mealConfig.icon;
           
           return (
-            <div key={index} className="flex items-start gap-3 p-3 bg-gray-700/50 rounded-lg hover:bg-gray-700/70 transition-colors">
+            <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
               <div className={`p-2 rounded-lg ${mealConfig.bg} flex-shrink-0`}>
                 <IconComponent className={`w-4 h-4 ${mealConfig.color}`} />
               </div>
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
-                  <h4 className="text-white font-medium text-sm">{meal.name}</h4>
-                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                  <h4 className="text-gray-900 font-medium text-sm">{meal.name}</h4>
+                  <div className="flex items-center gap-2 text-xs text-gray-800">
                     <Clock className="w-3 h-3" />
                     <span>{mealConfig.time}</span>
                     {meal.calories && (
@@ -84,13 +84,13 @@ const TodayMenu: React.FC<TodayMenuProps> = ({ currentDay }) => {
                 
                 <div className="space-y-1">
                   {meal.items.map((item, itemIndex) => (
-                    <p key={itemIndex} className="text-gray-300 text-xs leading-relaxed">
+                    <p key={itemIndex} className="text-gray-800 text-xs leading-relaxed">
                       • {item}
                     </p>
                   ))}
                 </div>
                 
-                {meal.isSmootie && (
+                {meal.isSmoothie && (
                   <div className="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-green-400/20 text-green-400 text-xs rounded-full">
                     <Zap className="w-3 h-3" />
                     <span>Smoothie</span>
@@ -104,7 +104,7 @@ const TodayMenu: React.FC<TodayMenuProps> = ({ currentDay }) => {
 
       <div className="mt-6 p-3 bg-blue-400/10 rounded-lg border border-blue-400/20">
         <h4 className="text-blue-400 font-medium text-sm mb-1">Estratégia do Dia</h4>
-        <p className="text-gray-300 text-xs">{dayPlan.strategy}</p>
+        <p className="text-gray-800 text-xs">{dayPlan.strategy}</p>
       </div>
     </div>
   );

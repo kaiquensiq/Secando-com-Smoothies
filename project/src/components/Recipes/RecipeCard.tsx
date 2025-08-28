@@ -82,7 +82,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
     <div 
       id={`recipe-${recipe.day}`}
       className={`
-        relative bg-gray-800 rounded-2xl overflow-hidden border transition-all duration-200
+        relative bg-gray-50 rounded-2xl overflow-hidden border border-gray-200 transition-all duration-200
         ${isToday 
           ? 'border-green-400/50 ring-2 ring-green-400/20 scale-[1.02]' 
           : 'border-gray-700 hover:border-gray-600 hover:scale-[1.01]'
@@ -97,7 +97,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
             ? 'bg-green-400 text-gray-900' 
             : isToday 
               ? 'bg-pink-400 text-gray-900 animate-pulse' 
-              : 'bg-gray-700 text-gray-300'
+              : 'bg-gray-700 text-gray-800'
           }
         `}>
           {isCompleted ? <CheckCircle className="w-5 h-5" /> : recipe.day}
@@ -133,10 +133,10 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
       {/* Content */}
       <div className="p-4 space-y-3">
         <div className="space-y-1">
-          <h3 className="text-lg font-bold text-white">
+          <h3 className="text-lg font-bold text-gray-900">
             {recipe.name}
           </h3>
-          <p className="text-gray-400 text-sm leading-relaxed">
+          <p className="text-gray-800 text-sm leading-relaxed">
             {recipe.description}
           </p>
         </div>
@@ -164,13 +164,13 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
           {recipe.tags.slice(0, 3).map((tag, index) => (
             <span 
               key={index}
-              className="px-2 py-1 bg-gray-700 text-gray-400 rounded-full text-xs"
+              className="px-2 py-1 bg-gray-200 text-gray-800 rounded-full text-xs border border-gray-300"
             >
               #{tag}
             </span>
           ))}
           {recipe.tags.length > 3 && (
-            <span className="px-2 py-1 bg-gray-700 text-gray-400 rounded-full text-xs">
+            <span className="px-2 py-1 bg-gray-200 text-gray-800 rounded-full text-xs border border-gray-300">
               +{recipe.tags.length - 3}
             </span>
           )}
@@ -187,7 +187,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
                   ? 'bg-green-400/20 text-green-400 cursor-default' 
                   : isToday 
                     ? 'bg-green-400 text-gray-900 hover:bg-green-300 active:scale-95' 
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300 border border-gray-300'
                 }
               `}>
               {isCompleted ? '✅ Concluído' : isToday ? '🥤 Fazer Agora' : '📋 Ver Receita'}
@@ -200,7 +200,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
                 px-3 py-3 rounded-xl transition-all duration-200
                 ${isFavorite 
                   ? 'bg-pink-400/20 text-pink-400 hover:bg-pink-400/30' 
-                  : 'bg-gray-700 text-gray-400 hover:bg-gray-600 hover:text-pink-400'
+                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300 hover:text-pink-400 border border-gray-300'
                 }
               `}
             >
@@ -223,7 +223,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
           {substitutionRecipes.length > 0 && (
             <button 
               onClick={handleShowSubstitutions}
-              className="w-full py-2 rounded-lg font-medium transition-all duration-200 bg-gray-700/50 text-gray-400 hover:bg-gray-600/50 hover:text-gray-300 text-sm flex items-center justify-center gap-2"
+              className="w-full py-2 rounded-lg font-medium transition-all duration-200 bg-gray-200 text-gray-800 hover:bg-gray-300 border border-gray-300 text-sm flex items-center justify-center gap-2"
             >
               <RefreshCw className="w-4 h-4" />
               Substituições ({substitutionRecipes.length})
@@ -234,11 +234,11 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
 
       {/* Expanded Recipe Details */}
       {isExpanded && (
-        <div className="border-t border-gray-700 bg-gray-800/50">
+        <div className="border-t border-gray-200 bg-gray-100/50">
           <div className="p-6 space-y-6">
             {/* Ingredients */}
             <div>
-              <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
                 <Star className="w-5 h-5 text-yellow-400" />
                 Ingredientes
               </h3>
@@ -246,7 +246,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
                 {recipe.ingredients.map((ingredient, index) => (
                   <div key={index} className="flex items-center space-x-3 p-2 bg-gray-700/50 rounded-lg">
                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span className="text-gray-300">{ingredient}</span>
+                    <span className="text-gray-800">{ingredient}</span>
                   </div>
                 ))}
               </div>
@@ -254,7 +254,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
 
             {/* Instructions */}
             <div>
-              <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
                 <Zap className="w-5 h-5 text-pink-400" />
                 Modo de Preparo
               </h3>
@@ -264,7 +264,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
                     <div className="w-6 h-6 bg-pink-400 text-black rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                       {index + 1}
                     </div>
-                    <span className="text-gray-300">{instruction}</span>
+                    <span className="text-gray-800">{instruction}</span>
                   </div>
                 ))}
               </div>
@@ -276,7 +276,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
                 <Zap className="w-4 h-4" />
                 Dica Especial
               </div>
-              <div className="text-gray-300 text-sm">
+              <div className="text-gray-800 text-sm">
                 {recipe.tips}
               </div>
             </div>
@@ -284,10 +284,10 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
             {/* Collapse Button */}
             <button
               onClick={() => setIsExpanded(false)}
-              className="w-full flex items-center justify-center space-x-2 py-3 bg-gray-700/50 hover:bg-gray-700 rounded-xl transition-all duration-200"
+              className="w-full flex items-center justify-center space-x-2 py-3 bg-gray-200 hover:bg-gray-300 rounded-xl transition-all duration-200 border border-gray-300"
             >
-              <span className="text-gray-300 font-medium">Fechar Receita</span>
-              <ChevronUp className="w-5 h-5 text-gray-300" />
+              <span className="text-gray-800 font-medium">Fechar Receita</span>
+              <ChevronUp className="w-5 h-5 text-gray-800" />
             </button>
           </div>
         </div>
@@ -295,16 +295,16 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
 
       {/* Substitutions Panel */}
       {showSubstitutions && (
-        <div className="border-t border-gray-700 bg-gray-800/30">
+        <div className="border-t border-gray-200 bg-gray-100/30">
           <div className="p-4 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                 <RefreshCw className="w-5 h-5 text-blue-400" />
                 Substituições Disponíveis
               </h3>
               <button
                 onClick={() => setShowSubstitutions(false)}
-                className="text-gray-400 hover:text-gray-300"
+                className="text-gray-800 hover:text-gray-800"
               >
                 <ChevronUp className="w-5 h-5" />
               </button>
@@ -315,8 +315,8 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
                 <div key={subRecipe.day} className="bg-gray-700/30 rounded-lg p-3 border border-gray-600/50">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className="font-medium text-white text-sm">{subRecipe.name}</h4>
-                      <p className="text-gray-400 text-xs mt-1">{subRecipe.description}</p>
+                      <h4 className="font-medium text-gray-900 text-sm">{subRecipe.name}</h4>
+                      <p className="text-gray-800 text-xs mt-1">{subRecipe.description}</p>
                       <div className="flex items-center space-x-3 mt-2 text-xs">
                         <span className="flex items-center gap-1 text-blue-400">
                           <Clock className="w-3 h-3" />
@@ -334,7 +334,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
                   </div>
                   <div className="flex flex-wrap gap-1 mt-2">
                     {subRecipe.tags.slice(0, 2).map((tag, index) => (
-                      <span key={index} className="px-1.5 py-0.5 bg-gray-600 text-gray-400 rounded text-xs">
+                      <span key={index} className="px-1.5 py-0.5 bg-gray-600 text-gray-800 rounded text-xs">
                         #{tag}
                       </span>
                     ))}

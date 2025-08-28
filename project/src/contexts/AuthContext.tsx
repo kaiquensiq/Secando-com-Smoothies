@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { auth, userService } from '../lib/supabase';
+import { auth, userService, supabase } from '../lib/supabase';
 import { UserData } from '../App';
 
 interface AuthContextType {
@@ -9,6 +9,7 @@ interface AuthContextType {
   userData: UserData | null;
   loading: boolean;
   signInWithEmail: (email: string) => Promise<{ data: any; error: any }>;
+  signInWithPassword: (email: string, password: string) => Promise<{ data: any; error: any }>;
   signOut: () => Promise<{ error: any }>;
   updateUserData: (updates: Partial<UserData>) => Promise<void>;
   refreshUserData: () => Promise<void>;
@@ -69,56 +70,185 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loadUserData = async (userId: string) => {
     try {
       const { data, error } = await userService.getUserData(userId);
+      
       if (error) {
         console.error('Erro ao carregar dados do usuário:', error);
+        // Se não encontrar dados, criar dados padrão
+        await createDefaultUserData(userId);
         return;
       }
+      
       if (data) {
         const convertedData = convertSupabaseToUserData(data);
         setUserData(convertedData);
+      } else {
+        // Se não há dados, criar dados padrão
+        await createDefaultUserData(userId);
       }
     } catch (error) {
       console.error('Erro ao carregar dados do usuário:', error);
+      // Em caso de erro, criar dados padrão
+      await createDefaultUserData(userId);
+    }
+  };
+
+  // Criar dados padrão para usuário novo
+  const createDefaultUserData = async (userId: string) => {
+    try {
+      if (!user?.email) return;
+      
+      // Criar perfil padrão no Supabase
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .insert({
+          id: userId,
+          name: user.email.split('@')[0], // Nome baseado no email
+          email: user.email,
+          has_completed_onboarding: false,
+          current_day: 1,
+          start_date: new Date().toISOString().split('T')[0],
+          total_points: 0,
+          streak: 0
+        });
+        
+      if (profileError) {
+        console.error('Erro ao criar perfil padrão:', profileError);
+      }
+      
+      // Criar dados de hidratação padrão
+      const { error: hydrationError } = await supabase
+        .from('hydration_tracking')
+        .insert({
+          user_id: userId,
+          daily_goal: 8,
+          current_glasses: 0,
+          tracking_date: new Date().toISOString().split('T')[0]
+        });
+        
+      if (hydrationError) {
+        console.error('Erro ao criar dados de hidratação:', hydrationError);
+      }
+      
+      // Definir dados padrão localmente
+      const defaultUserData: UserData = {
+        id: userId,
+        name: user.email.split('@')[0],
+        email: user.email,
+        profilePhoto: '',
+        hasCompletedOnboarding: false,
+        currentDay: 1,
+        startDate: new Date().toISOString().split('T')[0],
+        initialWeight: 0,
+        currentWeight: 0,
+        targetWeight: 0,
+        height: 0,
+        age: 0,
+        totalPoints: 0,
+        streak: 0,
+        eatingHabits: [],
+        goals: [],
+        badges: [],
+        checkins: [],
+        favoriteRecipes: [],
+        completedRecipes: [],
+        hydration: {
+          dailyGoal: 8,
+          currentGlasses: 0,
+          lastUpdated: new Date().toISOString()
+        }
+      };
+      
+      setUserData(defaultUserData);
+    } catch (error) {
+      console.error('Erro ao criar dados padrão:', error);
     }
   };
 
   // Atualizar dados do usuário
   const updateUserData = async (updates: Partial<UserData>) => {
-    if (!user || !userData) return;
+    if (!user) return;
 
     try {
-      // Converter updates para formato do Supabase
-      const supabaseUpdates: any = {};
-      
-      if (updates.name !== undefined) supabaseUpdates.name = updates.name;
-      if (updates.email !== undefined) supabaseUpdates.email = updates.email;
-      if (updates.profilePhoto !== undefined) supabaseUpdates.profile_photo = updates.profilePhoto;
-      if (updates.hasCompletedOnboarding !== undefined) supabaseUpdates.has_completed_onboarding = updates.hasCompletedOnboarding;
-      if (updates.currentDay !== undefined) supabaseUpdates.current_day = updates.currentDay;
-      if (updates.initialWeight !== undefined) supabaseUpdates.initial_weight = updates.initialWeight;
-      if (updates.currentWeight !== undefined) supabaseUpdates.current_weight = updates.currentWeight;
-      if (updates.targetWeight !== undefined) supabaseUpdates.target_weight = updates.targetWeight;
-      if (updates.height !== undefined) supabaseUpdates.height = updates.height;
-      if (updates.age !== undefined) supabaseUpdates.age = updates.age;
-      if (updates.totalPoints !== undefined) supabaseUpdates.total_points = updates.totalPoints;
-      if (updates.streak !== undefined) supabaseUpdates.streak = updates.streak;
+      // Atualizar estado local imediatamente para navegação instantânea
+      setUserData(prev => prev ? { ...prev, ...updates } : {
+        id: user.id,
+        name: updates.name || '',
+        email: user.email || '',
+        profilePhoto: '',
+        hasCompletedOnboarding: updates.hasCompletedOnboarding || false,
+        currentDay: updates.currentDay || 1,
+        startDate: updates.startDate || new Date().toISOString().split('T')[0],
+        initialWeight: updates.initialWeight || 0,
+        currentWeight: updates.currentWeight || 0,
+        targetWeight: updates.targetWeight || 0,
+        height: updates.height || 0,
+        age: updates.age || 0,
+        totalPoints: updates.totalPoints || 0,
+        streak: updates.streak || 0,
+        eatingHabits: updates.eatingHabits || [],
+        goals: updates.goals || [],
+        badges: [],
+        checkins: [],
+        favoriteRecipes: [],
+        completedRecipes: [],
+        hydration: {
+          dailyGoal: 8,
+          currentGlasses: 0,
+          lastUpdated: new Date().toISOString()
+        }
+      });
 
-      // Atualizar no Supabase
-      const { error } = await userService.updateProfile(user.id, supabaseUpdates);
-      if (error) {
-        console.error('Erro ao atualizar perfil:', error);
-        return;
-      }
+      // Salvar no Supabase em background
+      setTimeout(async () => {
+        try {
+          const supabaseUpdates: any = {};
+          
+          if (updates.name !== undefined) supabaseUpdates.name = updates.name;
+          if (updates.hasCompletedOnboarding !== undefined) supabaseUpdates.has_completed_onboarding = updates.hasCompletedOnboarding;
+          if (updates.currentDay !== undefined) supabaseUpdates.current_day = updates.currentDay;
+          if (updates.initialWeight !== undefined) supabaseUpdates.initial_weight = updates.initialWeight;
+          if (updates.currentWeight !== undefined) supabaseUpdates.current_weight = updates.currentWeight;
+          if (updates.targetWeight !== undefined) supabaseUpdates.target_weight = updates.targetWeight;
+          if (updates.height !== undefined) supabaseUpdates.height = updates.height;
+          if (updates.age !== undefined) supabaseUpdates.age = updates.age;
+          if (updates.startDate !== undefined) supabaseUpdates.start_date = updates.startDate;
+          if (updates.totalPoints !== undefined) supabaseUpdates.total_points = updates.totalPoints;
+          if (updates.streak !== undefined) supabaseUpdates.streak = updates.streak;
+          
+          const { error } = await supabase
+            .from('user_profiles')
+            .update(supabaseUpdates)
+            .eq('id', user.id);
+            
+          if (error) {
+            console.error('Erro ao salvar perfil:', error);
+          }
+          
+          // Salvar eating habits e goals
+          // Atualizar hidratação se fornecida
+          if (updates.hydration) {
+            await userService.updateHydration(user.id, updates.hydration.currentGlasses);
+          }
+          
+          if (updates.eatingHabits && updates.eatingHabits.length > 0) {
+            for (const habit of updates.eatingHabits) {
+              await userService.addEatingHabit(user.id, habit);
+            }
+          }
+          
+          if (updates.goals && updates.goals.length > 0) {
+            for (const goal of updates.goals) {
+              await userService.addGoal(user.id, goal);
+            }
+          }
+          
+        } catch (bgError) {
+          console.error('Erro no salvamento:', bgError);
+        }
+      }, 100);
 
-      // Atualizar hidratação se necessário
-      if (updates.hydration?.currentGlasses !== undefined) {
-        await userService.updateHydration(user.id, updates.hydration.currentGlasses);
-      }
-
-      // Atualizar estado local
-      setUserData(prev => prev ? { ...prev, ...updates } : null);
     } catch (error) {
-      console.error('Erro ao atualizar dados do usuário:', error);
+      console.error('Erro ao atualizar dados:', error);
     }
   };
 
@@ -134,28 +264,69 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return await auth.signInWithEmail(email);
   };
 
+  // Login direto com email e senha
+  const signInWithPassword = async (email: string, password: string) => {
+    return await auth.signInWithPassword(email, password);
+  };
+
   // Logout
   const signOut = async () => {
-    const result = await auth.signOut();
-    setUser(null);
-    setSession(null);
-    setUserData(null);
-    return result;
+    try {
+      const result = await auth.signOut();
+      // Sempre limpar o estado local, independente do resultado
+      setUser(null);
+      setSession(null);
+      setUserData(null);
+      return result;
+    } catch (error) {
+      // Em caso de erro, ainda limpar o estado local
+      console.warn('Erro no logout, mas limpando estado local:', error);
+      setUser(null);
+      setSession(null);
+      setUserData(null);
+      return { error: null };
+    }
   };
 
   // Efeito para escutar mudanças de autenticação
   useEffect(() => {
+    let isMounted = true;
+    
+    // Timeout de segurança para garantir que o loading não trave
+    const timeoutId = setTimeout(() => {
+      if (isMounted) {
+        setLoading(false);
+      }
+    }, 2000);
+    
     // Verificar sessão atual
     auth.getCurrentUser().then(({ user }) => {
+      if (!isMounted) return;
+      
       setUser(user);
       if (user) {
-        loadUserData(user.id);
+        loadUserData(user.id).finally(() => {
+          if (isMounted) {
+            setLoading(false);
+            clearTimeout(timeoutId);
+          }
+        });
+      } else {
+        setLoading(false);
+        clearTimeout(timeoutId);
       }
-      setLoading(false);
+    }).catch((error) => {
+      console.error('Erro ao verificar usuário atual:', error);
+      if (isMounted) {
+        setLoading(false);
+        clearTimeout(timeoutId);
+      }
     });
 
     // Escutar mudanças de autenticação
-    const { data: { subscription } } = auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = auth.onAuthStateChange(async (_event, session) => {
+      if (!isMounted) return;
+      
       setSession(session);
       setUser(session?.user ?? null);
       
@@ -169,6 +340,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
 
     return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
       subscription.unsubscribe();
     };
   }, []);
@@ -179,6 +352,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     userData,
     loading,
     signInWithEmail,
+    signInWithPassword,
     signOut,
     updateUserData,
     refreshUserData,

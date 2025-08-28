@@ -70,10 +70,10 @@ const WeeklyComparison: React.FC<WeeklyComparisonProps> = ({ userData }) => {
       {/* Current Week Highlight */}
       <div className="text-center space-y-2">
         <div className="text-sm text-gray-400">Você está na</div>
-        <div className="text-2xl font-bold text-white">
+        <div className="text-2xl font-bold text-gray-900">
           Semana {currentWeek} - {weeklyData[currentWeek - 1]?.title}
         </div>
-        <div className="text-gray-300 text-sm">
+        <div className="text-gray-800 text-sm">
           {weeklyData[currentWeek - 1]?.phase}
         </div>
       </div>
@@ -96,7 +96,7 @@ const WeeklyComparison: React.FC<WeeklyComparisonProps> = ({ userData }) => {
                   ? `${colorClass.bg} ring-2 ring-green-400/20 scale-105` 
                   : isCompleted 
                     ? `${colorClass.bg} opacity-90` 
-                    : 'bg-gray-800 border-gray-700 opacity-60'
+                    : 'bg-gray-50 border-gray-200 opacity-60'
                 }
               `}
             >
@@ -105,7 +105,7 @@ const WeeklyComparison: React.FC<WeeklyComparisonProps> = ({ userData }) => {
                 <div className="space-y-1">
                   <div className="flex items-center space-x-2">
                     <Calendar className={`w-5 h-5 ${isCompleted || isCurrent ? colorClass.text : 'text-gray-500'}`} />
-                    <h3 className={`text-lg font-bold ${isCompleted || isCurrent ? 'text-white' : 'text-gray-400'}`}>
+                    <h3 className={`text-lg font-bold ${isCompleted || isCurrent ? 'text-gray-900' : 'text-gray-400'}`}>
                       Semana {week.week}
                     </h3>
                   </div>
@@ -146,7 +146,7 @@ const WeeklyComparison: React.FC<WeeklyComparisonProps> = ({ userData }) => {
                       )}
                       <span className="text-sm text-gray-400">Perda de Peso</span>
                     </div>
-                    <div className="text-xl font-bold text-white">
+                    <div className="text-xl font-bold text-gray-900">
                       {Math.abs(weightLoss).toFixed(1)}kg
                     </div>
                   </div>
@@ -157,7 +157,7 @@ const WeeklyComparison: React.FC<WeeklyComparisonProps> = ({ userData }) => {
                       <Target className="w-4 h-4 text-blue-400" />
                       <span className="text-sm text-gray-400">Energia Média</span>
                     </div>
-                    <div className="text-xl font-bold text-white">
+                    <div className="text-xl font-bold text-gray-900">
                       {week.avgEnergy > 0 ? `${week.avgEnergy}/10` : '-'}
                     </div>
                   </div>
@@ -165,10 +165,10 @@ const WeeklyComparison: React.FC<WeeklyComparisonProps> = ({ userData }) => {
                   {/* Smoothies Completed */}
                   <div className="space-y-2">
                     <div className="text-sm text-gray-400">Smoothies</div>
-                    <div className="text-lg font-bold text-white">
+                    <div className="text-lg font-bold text-gray-900">
                       {week.smoothiesCompleted}/7
                     </div>
-                    <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div 
                         className={`h-full ${colorClass.accent} rounded-full transition-all duration-500`}
                         style={{ width: `${(week.smoothiesCompleted / 7) * 100}%` }}
@@ -179,10 +179,10 @@ const WeeklyComparison: React.FC<WeeklyComparisonProps> = ({ userData }) => {
                   {/* Challenges */}
                   <div className="space-y-2">
                     <div className="text-sm text-gray-400">Desafios</div>
-                    <div className="text-lg font-bold text-white">
+                    <div className="text-lg font-bold text-gray-900">
                       {Math.round(week.challenges)}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-800">
                       pontos conquistados
                     </div>
                   </div>
@@ -190,8 +190,8 @@ const WeeklyComparison: React.FC<WeeklyComparisonProps> = ({ userData }) => {
               )}
 
               {/* Week Description */}
-              <div className="bg-gray-700/30 rounded-xl p-3">
-                <p className="text-gray-300 text-sm leading-relaxed">
+              <div className="bg-gray-100 rounded-xl p-3">
+                <p className="text-gray-800 text-sm leading-relaxed">
                   <strong className={colorClass.text}>{week.phase}:</strong>{' '}
                   {week.week === 1 && "Foco na eliminação de toxinas e redução do inchaço através de smoothies detox ricos em antioxidantes."}
                   {week.week === 2 && "Receitas termogênicas para acelerar o metabolismo e potencializar a queima de gordura."}
@@ -206,7 +206,7 @@ const WeeklyComparison: React.FC<WeeklyComparisonProps> = ({ userData }) => {
                     <span>Progresso da Semana</span>
                     <span>{Math.round(((userData.currentDay - (week.week - 1) * 7) / 7) * 100)}%</span>
                   </div>
-                  <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
+                  <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
                     <div 
                       className={`h-full ${colorClass.accent} rounded-full transition-all duration-1000 ease-out`}
                       style={{ width: `${((userData.currentDay - (week.week - 1) * 7) / 7) * 100}%` }}
@@ -220,8 +220,8 @@ const WeeklyComparison: React.FC<WeeklyComparisonProps> = ({ userData }) => {
       </div>
 
       {/* Overall Comparison */}
-      <div className="bg-gray-800 rounded-2xl p-6 space-y-4">
-        <h3 className="text-lg font-bold text-white text-center">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+        <h3 className="text-lg font-bold text-gray-900 text-center">
           Resumo Geral
         </h3>
         

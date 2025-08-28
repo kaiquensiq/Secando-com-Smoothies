@@ -101,22 +101,36 @@ Quando um webhook de pagamento é recebido:
 ### Stripe
 ```javascript
 // Configurar webhook no Stripe Dashboard
-// URL: https://seu-dominio.com/webhook/payment
+// URL: https://smoothies.programasecacomigo.site/api/webhook/payment
 // Eventos: checkout.session.completed, payment_intent.succeeded
 ```
 
 ### Mercado Pago
 ```javascript
 // Configurar notificação IPN
-// URL: https://seu-dominio.com/webhook/payment
+// URL: https://smoothies.programasecacomigo.site/api/webhook/payment
 // Tópicos: payment
 ```
 
 ### Hotmart
 ```javascript
 // Configurar Postback
-// URL: https://seu-dominio.com/webhook/payment
+// URL: https://smoothies.programasecacomigo.site/api/webhook/payment
 // Eventos: PURCHASE_APPROVED
+```
+
+### Kiwify
+```javascript
+// Configurar Webhook
+// URL: https://smoothies.programasecacomigo.site/api/webhook/payment
+// Eventos: order.completed, order.approved
+```
+
+### Eduzz
+```javascript
+// Configurar Postback
+// URL: https://smoothies.programasecacomigo.site/api/webhook/payment
+// Eventos: purchase.approved
 ```
 
 ## 🛡️ Segurança

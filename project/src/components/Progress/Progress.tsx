@@ -10,7 +10,7 @@ interface ProgressProps {
   updateUserData: (data: Partial<UserData>) => void;
 }
 
-const Progress: React.FC<ProgressProps> = ({ userData, updateUserData }) => {
+const Progress: React.FC<ProgressProps> = ({ userData }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'chart' | 'achievements' | 'weekly'>('overview');
 
   const tabs = [
@@ -36,20 +36,20 @@ const Progress: React.FC<ProgressProps> = ({ userData, updateUserData }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-white text-gray-900">
       <div className="px-4 py-6 space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-2xl font-bold text-green-400">
+          <h1 className="text-2xl font-bold text-green-600">
             Seu Progresso
           </h1>
-          <p className="text-gray-300">
+          <p className="text-gray-800">
             Acompanhe sua evolução dia a dia
           </p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex space-x-1 bg-gray-800 p-1 rounded-xl">
+        <div className="flex space-x-1 bg-gray-100 p-1 rounded-xl">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -57,8 +57,8 @@ const Progress: React.FC<ProgressProps> = ({ userData, updateUserData }) => {
               className={`
                 flex-1 py-3 px-2 rounded-lg text-sm font-medium transition-all duration-200
                 ${activeTab === tab.id 
-                  ? 'bg-green-400 text-gray-900 scale-105' 
-                  : 'text-gray-400 hover:text-green-300 hover:bg-gray-700'
+                  ? 'bg-green-500 text-white scale-105' 
+                  : 'text-gray-800 hover:text-green-600 hover:bg-gray-200'
                 }
               `}
             >
@@ -73,6 +73,18 @@ const Progress: React.FC<ProgressProps> = ({ userData, updateUserData }) => {
         {/* Active Tab Content */}
         <div className="min-h-96">
           {renderActiveTab()}
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-gray-50 p-4 rounded-xl text-center border border-gray-200">
+            <div className="text-2xl font-bold text-green-600">{(userData as any).completedDays || 0}</div>
+            <div className="text-sm text-gray-800">Dias Completos</div>
+          </div>
+          <div className="bg-gray-50 p-4 rounded-xl text-center border border-gray-200">
+            <div className="text-2xl font-bold text-blue-600">{21 - ((userData as any).completedDays || 0)}</div>
+            <div className="text-sm text-gray-800">Dias Restantes</div>
+          </div>
         </div>
       </div>
     </div>
