@@ -15,7 +15,10 @@ const TodayChallenge: React.FC<TodayChallengeProps> = ({ currentDay }) => {
   // Carregar desafios salvos do banco de dados
   useEffect(() => {
     const loadCompletedChallenges = async () => {
-      if (!user?.id) return;
+      if (!user?.id) {
+        setLoading(false);
+        return;
+      }
       
       try {
         const savedChallenges = await userService.getDailyChallenges(user.id, currentDay);
